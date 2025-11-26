@@ -1,5 +1,27 @@
 package br.edu.ufape.personal_trainer.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+import jakarta.persistence.OneToMany;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor
+@Entity
+@Inheritance(strategy = InheritanceType.JOINED)
 public class Personal extends Usuario{
-	String cref;
+	private String cref;
+	
+	@OneToMany(mappedBy = "personal", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Chat> chats = new ArrayList<>();
+
+	@OneToMany(mappedBy = "personal", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Aluno> alunos = new ArrayList<>();
 }

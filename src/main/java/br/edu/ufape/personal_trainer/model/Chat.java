@@ -1,7 +1,9 @@
 package br.edu.ufape.personal_trainer.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -15,19 +17,19 @@ import lombok.Setter;
 
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
 @Entity
-public class Exercicio {
+public class Chat {
 	@Id
 	@GeneratedValue
-	private Long idExercicio;
+	private Long idChat;
 	
 	@ManyToOne
-	@JoinColumn(name = "idGrupo")
-	private GrupoMuscular grupoMuscular;
+	@JoinColumn(name = "idPersonal")
+	private Personal personal;
 	
-	@OneToMany(mappedBy = "exercicio")
-	private List<ItemTreino> itens;
+	@ManyToOne
+	@JoinColumn(name = "idAluno")
+	private Aluno aluno;
 	
-	private String nome;
-	private String descricao;
-	private String videoDemonstracao;
+	@OneToMany(mappedBy = "chat", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Mensagem> mensagens = new ArrayList<>();
 }
