@@ -3,6 +3,7 @@ package br.edu.ufape.personal_trainer.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -17,11 +18,13 @@ import lombok.Setter;
 public class GrupoMuscular {
 	@Id
 	@GeneratedValue
-	private Long idGrupo;
+	private Long idGrupoMuscular;
 	
-	@OneToMany(mappedBy = "grupoMuscular")
+	@OneToMany(mappedBy = "idGrupoMuscular")
 	private List<Exercicio> exercicios = new ArrayList<>();
 	
+	@Column(unique = true, nullable = false)
 	private String nome;
+	
 	private String descricao;
 }

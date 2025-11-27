@@ -2,6 +2,7 @@ package br.edu.ufape.personal_trainer.model;
 
 import java.util.List;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -21,13 +22,15 @@ public class Exercicio {
 	private Long idExercicio;
 	
 	@ManyToOne
-	@JoinColumn(name = "idGrupo")
+	@JoinColumn(name = "idGrupoMuscular")
 	private GrupoMuscular grupoMuscular;
 	
-	@OneToMany(mappedBy = "exercicio")
+	@OneToMany(mappedBy = "idExercicio")
 	private List<ItemTreino> itens;
 	
+	@Column(unique = true, nullable = false)
 	private String nome;
+	
 	private String descricao;
 	private String videoDemonstracao;
 }

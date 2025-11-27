@@ -20,13 +20,13 @@ import lombok.Setter;
 public class PlanoDeTreino {
 	@Id
 	@GeneratedValue
-	private Long idPlano;
+	private Long idPlanoDeTreino;
 	
 	@ManyToOne
 	@JoinColumn(name = "idAluno")
 	private Aluno aluno;
 	
-	@OneToMany(mappedBy = "plano", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "idPlanoDeTreino", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<ItemTreino> itens;
 	
 	private String nome;

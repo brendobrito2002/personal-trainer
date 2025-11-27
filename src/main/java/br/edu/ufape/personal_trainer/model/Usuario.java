@@ -1,5 +1,6 @@
 package br.edu.ufape.personal_trainer.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -16,6 +17,9 @@ public abstract class Usuario {
 	private Long idUsuario;
 	
 	private String nome;
+	
+	@Column(unique = true, nullable = false)
 	private String email;
+	
 	private String senha;
 }

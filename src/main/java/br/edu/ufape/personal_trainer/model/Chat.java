@@ -30,6 +30,6 @@ public class Chat {
 	@JoinColumn(name = "idAluno")
 	private Aluno aluno;
 	
-	@OneToMany(mappedBy = "chat", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "idChat", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Mensagem> mensagens = new ArrayList<>();
 }

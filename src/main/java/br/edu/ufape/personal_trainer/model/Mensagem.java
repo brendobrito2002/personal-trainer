@@ -19,7 +19,7 @@ public class Mensagem{
 	private Long idMensagem;
 	
 	@ManyToOne
-	@JoinColumn(name = "chat")
+	@JoinColumn(name = "idChat")
 	private Chat chat;
 	
 	private String conteudo;
