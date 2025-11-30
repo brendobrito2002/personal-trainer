@@ -46,12 +46,12 @@ public class ChatService {
 	}
 	
 	//metodos personalizados
-	public List<Chat> buscarPorAlunoId(Long id){
-		return chatRepository.findByAlunoId(id);
+	public List<Chat> buscarPorAlunoId(Long alunoId){
+		return chatRepository.findByAlunoId(alunoId);
 	}
 	
-	public List<Chat> buscarPorPersonalId(Long id){
-		return chatRepository.findByPersonalId(id);
+	public List<Chat> buscarPorPersonalId(Long personalId){
+		return chatRepository.findByPersonalId(personalId);
 	}
 	
 	public Chat buscarPorAlunoIdAndPersonalId(Long alunoId, Long personalId) {

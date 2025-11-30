@@ -15,7 +15,7 @@ public class ExercicioService {
 	private ExercicioRepository exercicioRepository;
 	
 	// listar todos
-	public List<Exercicio> buscarTodos(){
+	public List<Exercicio> listarTodos(){
 		return exercicioRepository.findAll();
 	}
 	
