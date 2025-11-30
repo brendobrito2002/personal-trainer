@@ -12,7 +12,7 @@ public interface MensagemRepository extends JpaRepository<Mensagem, Long>{
 
 	List<Mensagem> findByChatIdOrderByTimeStamp(Long idChat);
 	
-	List<Mensagem> findByChatIdEnviadaPeloAlunoTrue(Long idChat);
+	List<Mensagem> findByChatIdAndEnviadaPeloAlunoTrue(Long idChat);
 	
-	List<Mensagem> findByChatIdEnviadaPeloAlunoFalse(Long idChat);
+	List<Mensagem> findByChatIdAndEnviadaPeloAlunoFalse(Long idChat);
 }

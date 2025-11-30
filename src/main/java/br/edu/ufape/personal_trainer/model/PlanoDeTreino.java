@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -20,16 +21,18 @@ import lombok.Setter;
 public class PlanoDeTreino {
 	@Id
 	@GeneratedValue
-	private Long idPlanoDeTreino;
+	private Long idPlano;
 	
 	@ManyToOne
 	@JoinColumn(name = "idAluno")
 	private Aluno aluno;
 	
-	@OneToMany(mappedBy = "idPlanoDeTreino", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "plano", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<ItemTreino> itens;
 	
+	@Column(nullable = false)
 	private String nome;
+	
 	private Date dataCriacao;
 	private int duracaoSemanas;
 	private Date dataInicio;

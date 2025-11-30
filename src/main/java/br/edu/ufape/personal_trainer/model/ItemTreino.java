@@ -18,7 +18,7 @@ public class ItemTreino {
 	private Long idItemTreino;
 	
 	@ManyToOne
-	@JoinColumn(name = "idPlanoDeTreino", nullable = false)
+	@JoinColumn(name = "idPlano", nullable = false)
 	private PlanoDeTreino plano;
 	
 	@ManyToOne

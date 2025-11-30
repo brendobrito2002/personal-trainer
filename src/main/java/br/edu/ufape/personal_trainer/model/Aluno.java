@@ -25,16 +25,16 @@ public class Aluno extends Usuario{
 	@JoinColumn(name = "idPersonal")
 	private Personal personal;
 	
-	@OneToMany(mappedBy = "idAluno", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "aluno", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<AvaliacaoFisica> avaliacoes;
 	
-	@OneToOne(mappedBy = "idAluno", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToOne(mappedBy = "aluno", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Chat chat;
 	
-	@OneToMany(mappedBy = "idAluno", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "aluno", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Fatura> faturas = new ArrayList<>();
 	
-	@OneToMany(mappedBy = "idAluno", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "aluno", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<PlanoDeTreino> planos = new ArrayList<>();
 	
 	private String modalidade;

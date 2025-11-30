@@ -12,5 +12,5 @@ public interface FaturaRepository extends JpaRepository<Fatura, Long>{
 	
 	List<Fatura> findByAlunoId(Long idAluno);
 	
-	List<Fatura> findByStatus();
+	List<Fatura> findByStatus(String status);
 }

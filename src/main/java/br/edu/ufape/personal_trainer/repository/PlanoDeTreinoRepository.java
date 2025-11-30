@@ -13,5 +13,5 @@ public interface PlanoDeTreinoRepository extends JpaRepository<PlanoDeTreino, Lo
 	
 	List<PlanoDeTreino> findByAlunoId(Long idAluno);
 	
-	Optional<PlanoDeTreino> findByNome(String nome);
+	List<PlanoDeTreino> findByNome(String nome);
 }

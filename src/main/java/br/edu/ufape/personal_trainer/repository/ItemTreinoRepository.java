@@ -10,7 +10,7 @@ import br.edu.ufape.personal_trainer.model.ItemTreino;
 @Repository
 public interface ItemTreinoRepository extends JpaRepository<ItemTreino, Long>{
 
-	List<ItemTreino> findByPlanoDeTreinoId(Long idPlanoDeTreino);
+	List<ItemTreino> findByPlanoId(Long idPlano);
 	
 	List<ItemTreino> findByExercicioId(Long idExercicio);
 }

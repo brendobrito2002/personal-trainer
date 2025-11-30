@@ -21,9 +21,9 @@ public class Personal extends Usuario{
 	@Column(unique = true, nullable = false)
 	private String cref;
 	
-	@OneToMany(mappedBy = "idPersonal", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "personal", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Chat> chats = new ArrayList<>();
 
-	@OneToMany(mappedBy = "idPersonal", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "personal", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Aluno> alunos = new ArrayList<>();
 }

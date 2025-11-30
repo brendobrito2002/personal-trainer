@@ -20,7 +20,7 @@ public class GrupoMuscular {
 	@GeneratedValue
 	private Long idGrupoMuscular;
 	
-	@OneToMany(mappedBy = "idGrupoMuscular")
+	@OneToMany(mappedBy = "grupoMuscular")
 	private List<Exercicio> exercicios = new ArrayList<>();
 	
 	@Column(unique = true, nullable = false)

@@ -25,7 +25,7 @@ public class Exercicio {
 	@JoinColumn(name = "idGrupoMuscular")
 	private GrupoMuscular grupoMuscular;
 	
-	@OneToMany(mappedBy = "idExercicio")
+	@OneToMany(mappedBy = "exercicio")
 	private List<ItemTreino> itens;
 	
 	@Column(unique = true, nullable = false)

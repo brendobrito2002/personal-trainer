@@ -13,9 +13,9 @@ public interface AlunoRepository extends JpaRepository<Aluno, Long>{
 	
 	List<Aluno> findByModalidade(String modalidade);
 	
-	List<Aluno> findByAtivo();
+	List<Aluno> findByAtivoTrue();
 	
 	Optional<Aluno> findByEmail(String email);
 	
-	Optional<Aluno> findByNome(String nome);
+	List<Aluno> findByNome(String nome);
 }
