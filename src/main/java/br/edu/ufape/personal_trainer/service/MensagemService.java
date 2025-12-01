@@ -43,14 +43,14 @@ public class MensagemService {
 
     // métodos personalizados
     public List<Mensagem> buscarPorChatId(Long chatId) {
-        return mensagemRepository.findByChatIdOrderByTimeStamp(chatId);
+        return mensagemRepository.findByChat_IdChatOrderByTimeStamp(chatId);
     }
 
     public List<Mensagem> buscarEnviadasPeloAluno(Long chatId) {
-        return mensagemRepository.findByChatIdAndEnviadaPeloAlunoTrue(chatId);
+        return mensagemRepository.findByChat_IdChatAndEnviadoPeloAlunoTrue(chatId);
     }
 
     public List<Mensagem> buscarEnviadasPeloPersonal(Long chatId) {
-        return mensagemRepository.findByChatIdAndEnviadaPeloAlunoFalse(chatId);
+        return mensagemRepository.findByChat_IdChatAndEnviadoPeloAlunoFalse(chatId);
     }
 }

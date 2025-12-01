@@ -19,7 +19,7 @@ public class Fatura {
 	private Long idFatura;
 	
 	@ManyToOne
-	@JoinColumn(name = "idAluno")
+	@JoinColumn(name = "alunoId")
 	private Aluno aluno;
 	
 	private Date dataVencimento;

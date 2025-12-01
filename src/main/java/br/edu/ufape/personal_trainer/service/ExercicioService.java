@@ -47,8 +47,8 @@ public class ExercicioService {
 	}
 	
 	// metodos personalizados
-	public List<Exercicio> buscarPorGrupoMuscular(Long id){
-		return exercicioRepository.findByGrupoMuscularId(id);
+	public List<Exercicio> buscarPorGrupoMuscular(Long grupoMuscularId){
+		return exercicioRepository.findByGrupoMuscular_GrupoMuscularId(grupoMuscularId);
 	}
 	
 	public Exercicio buscarNome(String nome) {

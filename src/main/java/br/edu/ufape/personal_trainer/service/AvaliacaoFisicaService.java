@@ -42,6 +42,6 @@ public class AvaliacaoFisicaService {
 	
 	// metodos personalizados
 	public List<AvaliacaoFisica> encontrarPorIdAluno(Long id){
-		return avaliacaoFisicaRepository.findByAlunoId(id);
+		return avaliacaoFisicaRepository.findByAlunoIdUsuario(id);
 	}
 }

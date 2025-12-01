@@ -11,7 +11,7 @@ import br.edu.ufape.personal_trainer.model.PlanoDeTreino;
 @Repository
 public interface PlanoDeTreinoRepository extends JpaRepository<PlanoDeTreino, Long>{
 	
-	List<PlanoDeTreino> findByAlunoId(Long idAluno);
+	List<PlanoDeTreino> findByAluno_IdUsuario(Long idAluno);
 	
 	List<PlanoDeTreino> findByNome(String nome);
 }

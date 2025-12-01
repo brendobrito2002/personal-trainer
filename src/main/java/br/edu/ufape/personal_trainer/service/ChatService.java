@@ -31,7 +31,7 @@ public class ChatService {
 	    }
 	    Long alunoId = chat.getAluno().getIdUsuario();
 	    Long personalId = chat.getPersonal().getIdUsuario();
-	    if (chatRepository.findByAlunoIdAndPersonalId(alunoId, personalId).isPresent()) {
+	    if (chatRepository.findByAluno_IdUsuarioAndPersonal_IdUsuario(alunoId, personalId).isPresent()) {
 	        throw new IllegalArgumentException("Chat já existe entre esses usuários");
 	    }
 	    return chatRepository.save(chat);
@@ -46,15 +46,15 @@ public class ChatService {
 	}
 	
 	//metodos personalizados
-	public List<Chat> buscarPorAlunoId(Long alunoId){
-		return chatRepository.findByAlunoId(alunoId);
+	public List<Chat> buscarPorAluno(Long alunoId) {
+	    return chatRepository.findByAluno_IdUsuario(alunoId);
 	}
-	
-	public List<Chat> buscarPorPersonalId(Long personalId){
-		return chatRepository.findByPersonalId(personalId);
+
+	public List<Chat> buscarPorPersonal(Long personalId) {
+	    return chatRepository.findByPersonal_IdUsuario(personalId);
 	}
 	
 	public Chat buscarPorAlunoIdAndPersonalId(Long alunoId, Long personalId) {
-		return chatRepository.findByAlunoIdAndPersonalId(alunoId, personalId).orElseThrow(() -> new RuntimeException("Chat não encontrado entre aluno ID " + alunoId + " e personal ID " + personalId));
+		return chatRepository.findByAluno_IdUsuarioAndPersonal_IdUsuario(alunoId, personalId).orElseThrow(() -> new RuntimeException("Chat não encontrado entre aluno ID " + alunoId + " e personal ID " + personalId));
 	}
 }

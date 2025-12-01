@@ -18,7 +18,7 @@ import lombok.Setter;
 public class GrupoMuscular {
 	@Id
 	@GeneratedValue
-	private Long idGrupoMuscular;
+	private Long grupoMuscularId;
 	
 	@OneToMany(mappedBy = "grupoMuscular")
 	private List<Exercicio> exercicios = new ArrayList<>();

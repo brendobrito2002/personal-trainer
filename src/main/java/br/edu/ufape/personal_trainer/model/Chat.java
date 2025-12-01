@@ -23,11 +23,11 @@ public class Chat {
 	private Long idChat;
 	
 	@ManyToOne
-	@JoinColumn(name = "idPersonal")
+	@JoinColumn(name = "personalId")
 	private Personal personal;
 	
 	@ManyToOne
-	@JoinColumn(name = "idAluno")
+	@JoinColumn(name = "alunoId")
 	private Aluno aluno;
 	
 	@OneToMany(mappedBy = "chat", cascade = CascadeType.ALL, orphanRemoval = true)

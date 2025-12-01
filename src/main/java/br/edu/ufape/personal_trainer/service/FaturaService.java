@@ -41,8 +41,8 @@ public class FaturaService {
 	}
 	
 	// metodos personalizados
-	public List<Fatura> buscarPorAlunoId(Long id){
-		return faturaRepository.findByAlunoId(id);
+	public List<Fatura> buscarPorAlunoId(Long alunoId){
+		return faturaRepository.findByAluno_IdUsuario(alunoId);
 	}
 	
 	public List<Fatura> buscarPorStatus(String status){

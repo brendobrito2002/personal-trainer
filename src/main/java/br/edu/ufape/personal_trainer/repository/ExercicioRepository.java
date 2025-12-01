@@ -11,7 +11,7 @@ import br.edu.ufape.personal_trainer.model.Exercicio;
 @Repository
 public interface ExercicioRepository extends JpaRepository<Exercicio, Long>{
 	
-	List<Exercicio> findByGrupoMuscularId(Long idGrupoMuscular);
+	List<Exercicio> findByGrupoMuscular_GrupoMuscularId(Long grupoMuscularId);
 	
 	Optional<Exercicio> findByNome(String nome);
 }
