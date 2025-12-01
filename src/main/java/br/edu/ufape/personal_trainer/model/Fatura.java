@@ -1,6 +1,8 @@
 package br.edu.ufape.personal_trainer.model;
 
-import java.util.Date;
+import java.time.LocalDate;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -16,14 +18,21 @@ import lombok.Setter;
 public class Fatura {
 	@Id
 	@GeneratedValue
-	private Long idFatura;
+	private Long faturaId;
 	
 	@ManyToOne
 	@JoinColumn(name = "alunoId")
 	private Aluno aluno;
 	
-	private Date dataVencimento;
-	private Date dataPagamento;
+	@Column(name = "data_vencimento", nullable = false)
+	private LocalDate dataVencimento;
+	
+	@Column(name = "data_pagamento", nullable = false)
+	private LocalDate dataPagamento;
+	
+	@Column(nullable = false)
 	private Double valor;
+	
+	@Column(nullable = false)
 	private String status;
 }

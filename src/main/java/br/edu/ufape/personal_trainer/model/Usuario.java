@@ -17,12 +17,12 @@ import lombok.Setter;
 public abstract class Usuario {
 	@Id
 	@GeneratedValue
-	private Long idUsuario;
+	private Long usuarioId;
 	
 	@Column(nullable = false)
 	private String nome;
 	
-	@Column(unique = true, nullable = false)
+	@Column(nullable = false, unique = true)
 	private String email;
 	
 	@Column(nullable = false)

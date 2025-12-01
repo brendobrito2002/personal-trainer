@@ -1,6 +1,6 @@
 package br.edu.ufape.personal_trainer.model;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
@@ -21,10 +21,10 @@ import lombok.Setter;
 public class PlanoDeTreino {
 	@Id
 	@GeneratedValue
-	private Long idPlano;
+	private Long planoId;
 	
 	@ManyToOne
-	@JoinColumn(name = "idAluno")
+	@JoinColumn(name = "alunoId")
 	private Aluno aluno;
 	
 	@OneToMany(mappedBy = "plano", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -33,9 +33,18 @@ public class PlanoDeTreino {
 	@Column(nullable = false)
 	private String nome;
 	
-	private Date dataCriacao;
+	@Column(name = "data_criacao", nullable = false)
+	private LocalDate dataCriacao;
+	
+	@Column(name = "duracao_semanas", nullable = false)
 	private int duracaoSemanas;
-	private Date dataInicio;
-	private Date dataFim;
+	
+	@Column(name = "data_inicio", nullable = false)
+	private LocalDate dataInicio;
+	
+	@Column(name = "data_fim", nullable = false)
+	private LocalDate dataFim;
+	
+	@Column(nullable = false)
 	private Boolean ativo;
 }

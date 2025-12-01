@@ -45,10 +45,10 @@ public class ItemTreinoService {
 	
 	// metodos personalizados
 	public List<ItemTreino> buscarPorPlanoId(Long id){
-		return itemTreinoRepository.findByPlano_IdPlano(id);
+		return itemTreinoRepository.findByPlano_PlanoId(id);
 	}
 	
 	public List<ItemTreino> buscarPorExercicioId(Long id){
-		return itemTreinoRepository.findByExercicio_IdExercicio(id);
+		return itemTreinoRepository.findByExercicio_ExercicioId(id);
 	}
 }

@@ -10,6 +10,6 @@ import br.edu.ufape.personal_trainer.model.AvaliacaoFisica;
 @Repository
 public interface AvaliacaoFisicaRepository extends JpaRepository<AvaliacaoFisica, Long>{
 	
-	List<AvaliacaoFisica> findByAlunoIdUsuario(Long idUsuario);
+	List<AvaliacaoFisica> findByAlunoUsuarioId(Long usuarioId);
 
 }

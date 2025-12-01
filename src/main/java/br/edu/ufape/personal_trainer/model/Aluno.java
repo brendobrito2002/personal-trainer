@@ -1,10 +1,11 @@
 package br.edu.ufape.personal_trainer.model;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
@@ -22,7 +23,7 @@ import lombok.Setter;
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Aluno extends Usuario{
 	@ManyToOne
-	@JoinColumn(name = "idPersonal")
+	@JoinColumn(name = "personalId")
 	private Personal personal;
 	
 	@OneToMany(mappedBy = "aluno", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -37,8 +38,15 @@ public class Aluno extends Usuario{
 	@OneToMany(mappedBy = "aluno", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<PlanoDeTreino> planos = new ArrayList<>();
 	
+	@Column(nullable = false)
 	private String modalidade;
-	private Date dataNascimento;
+	
+	@Column(name = "data_nascimento", nullable = false)
+	private LocalDate dataNascimento;
+	
+	@Column(nullable = false)
 	private Boolean ativo;
+	
+	@Column(nullable = false)
 	private String objetivo;
 }

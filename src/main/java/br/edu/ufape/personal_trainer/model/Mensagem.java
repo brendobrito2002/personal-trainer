@@ -1,6 +1,8 @@
 package br.edu.ufape.personal_trainer.model;
 
-import java.util.Date;
+import java.time.LocalDateTime;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -16,16 +18,24 @@ import lombok.Setter;
 public class Mensagem{
 	@Id
 	@GeneratedValue
-	private Long idMensagem;
+	private Long mensagemId;
 	
 	@ManyToOne
-	@JoinColumn(name = "idChat")
+	@JoinColumn(name = "chatId")
 	private Chat chat;
 	
+	@Column(nullable = false)
 	private String conteudo;
+	
 	private String caminhoImagem;
 	private String caminhoVideo;
-	private Date timeStamp;
-	private Boolean enviadoPeloAluno;
-	private Boolean lida;
+	
+	@Column(nullable = false)
+	private LocalDateTime timeStamp;
+	
+	@Column(nullable = false)
+	private Boolean enviadoPeloAluno = false;
+	
+	@Column(nullable = false)
+	private Boolean lida = false;
 }
