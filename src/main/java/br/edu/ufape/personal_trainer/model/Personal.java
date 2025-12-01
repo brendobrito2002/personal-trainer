@@ -18,7 +18,7 @@ import lombok.Setter;
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Personal extends Usuario{
-	@Column(unique = true, nullable = false)
+	@Column( unique = true, nullable = false)
 	private String cref;
 	
 	@OneToMany(mappedBy = "personal", cascade = CascadeType.ALL, orphanRemoval = true)

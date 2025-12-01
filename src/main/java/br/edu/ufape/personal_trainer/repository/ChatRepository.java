@@ -11,10 +11,10 @@ import br.edu.ufape.personal_trainer.model.Chat;
 @Repository
 public interface ChatRepository extends JpaRepository<Chat, Long>{
 	
-	List<Chat> findByAluno_IdUsuario(Long alunoId);
+	List<Chat> findByAluno_UsuarioId(Long alunoId);
 	
-    List<Chat> findByPersonal_IdUsuario(Long personalId);
+    List<Chat> findByPersonal_UsuarioId(Long personalId);
 
-    Optional<Chat> findByAluno_IdUsuarioAndPersonal_IdUsuario(Long alunoId, Long personalId);
+    Optional<Chat> findByAluno_UsuarioIdAndPersonal_UsuarioId(Long alunoId, Long personalId);
 
 }

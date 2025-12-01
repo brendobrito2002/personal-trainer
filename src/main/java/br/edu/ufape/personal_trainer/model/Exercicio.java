@@ -19,10 +19,10 @@ import lombok.Setter;
 public class Exercicio {
 	@Id
 	@GeneratedValue
-	private Long idExercicio;
+	private Long exercicioId;
 	
 	@ManyToOne
-	@JoinColumn(name = "idGrupoMuscular")
+	@JoinColumn(name = "grupoMuscularId")
 	private GrupoMuscular grupoMuscular;
 	
 	@OneToMany(mappedBy = "exercicio")
@@ -31,6 +31,9 @@ public class Exercicio {
 	@Column(unique = true, nullable = false)
 	private String nome;
 	
+	@Column(nullable = false)
 	private String descricao;
+	
+	@Column(nullable = true)
 	private String videoDemonstracao;
 }

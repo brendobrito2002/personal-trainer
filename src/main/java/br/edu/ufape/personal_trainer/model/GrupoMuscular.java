@@ -26,5 +26,6 @@ public class GrupoMuscular {
 	@Column(unique = true, nullable = false)
 	private String nome;
 	
+	@Column(nullable = false)
 	private String descricao;
 }

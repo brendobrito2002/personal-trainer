@@ -1,5 +1,6 @@
 package br.edu.ufape.personal_trainer.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -15,18 +16,25 @@ import lombok.Setter;
 public class ItemTreino {
 	@Id
 	@GeneratedValue
-	private Long idItemTreino;
+	private Long itemTreinoId;
 	
 	@ManyToOne
-	@JoinColumn(name = "idPlano", nullable = false)
+	@JoinColumn(name = "planoId", nullable = false)
 	private PlanoDeTreino plano;
 	
 	@ManyToOne
-	@JoinColumn(name = "idExercicio", nullable = false)
+	@JoinColumn(name = "exercicioId", nullable = false)
 	private Exercicio exercicio;
 	
+	@Column(nullable = false)
 	private int series;
+	
+	@Column(nullable = false)
 	private String repeticoes;
+	
+	@Column(nullable = true)
 	private Double cargaKg;
+	
+	@Column(nullable = false)
 	private int descansoSegundos;
 }

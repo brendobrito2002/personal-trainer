@@ -20,7 +20,7 @@ import lombok.Setter;
 public class Chat {
 	@Id
 	@GeneratedValue
-	private Long idChat;
+	private Long chatId;
 	
 	@ManyToOne
 	@JoinColumn(name = "personalId")

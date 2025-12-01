@@ -46,7 +46,7 @@ public class PlanoDeTreinoService {
 
     // metodos personalizados
     public List<PlanoDeTreino> buscarPorAlunoId(Long alunoId) {
-        return planoDeTreinoRepository.findByAluno_IdUsuario(alunoId);
+        return planoDeTreinoRepository.findByAluno_UsuarioId(alunoId);
     }
 
     public List<PlanoDeTreino> buscarPorNome(String nome) {
