@@ -57,7 +57,7 @@ public class ChatController {
 	}
 	
 	@GetMapping("/entre/{alunoId}/{personalId}")
-	public Chat buscarPorAlunoIdAndPersonalId(@PathVariable Long alunoId, Long personalId) {
+	public Chat buscarPorAlunoIdAndPersonalId(@PathVariable Long alunoId, @PathVariable Long personalId) {
 		return chatService.buscarPorAlunoIdAndPersonalId(alunoId, personalId);
 	}
 }

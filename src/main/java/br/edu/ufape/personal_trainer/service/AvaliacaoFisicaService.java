@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.edu.ufape.personal_trainer.dto.AvaliacaoFisicaRequest;
+import br.edu.ufape.personal_trainer.model.Aluno;
 import br.edu.ufape.personal_trainer.model.AvaliacaoFisica;
 import br.edu.ufape.personal_trainer.repository.AvaliacaoFisicaRepository;
 
@@ -22,6 +24,22 @@ public class AvaliacaoFisicaService {
 	// buscar id
 	public AvaliacaoFisica buscarId(Long id) {
 		return avaliacaoFisicaRepository.findById(id).orElseThrow(() -> new RuntimeException("Não existe uma Avaliação Fisica com o ID: " + id));
+	}
+	
+	// criar dto
+	public AvaliacaoFisica criar(AvaliacaoFisicaRequest dto, Aluno aluno) {
+
+	    AvaliacaoFisica av = new AvaliacaoFisica();
+	    av.setAluno(aluno);
+	    av.setDataAvaliacao(dto.dataAvaliacao());
+	    av.setPesoKg(dto.pesoKg());
+	    av.setAlturaCm(dto.alturaCm());
+	    av.setPercentualGordura(dto.percentualGordura());
+	    av.setObservacoes(dto.observacoes());
+	    av.setFoto(dto.foto());
+	    av.setFeitoPeloPersonal(dto.feitoPeloPersonal());
+
+	    return avaliacaoFisicaRepository.save(av);
 	}
 	
 	// salvar (MUITO PROVAVELMENTE ADICIONAR MAIS)

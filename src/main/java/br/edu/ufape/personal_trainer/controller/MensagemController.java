@@ -31,7 +31,6 @@ public class MensagemController {
         return ResponseEntity.ok(new MensagemResponse(msg));
     }
 
-    // ENVIAR MENSAGEM (com chatId na URL)
     @PostMapping("/chat/{chatId}")
     public ResponseEntity<MensagemResponse> enviar(
             @PathVariable Long chatId,

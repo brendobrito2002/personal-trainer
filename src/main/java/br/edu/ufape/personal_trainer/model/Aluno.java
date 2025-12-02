@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -26,9 +28,11 @@ public class Aluno extends Usuario{
 	@JoinColumn(name = "personalId")
 	private Personal personal;
 	
+	@JsonIgnore
 	@OneToMany(mappedBy = "aluno", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<AvaliacaoFisica> avaliacoes;
 	
+	@JsonIgnore
 	@OneToOne(mappedBy = "aluno", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Chat chat;
 	
