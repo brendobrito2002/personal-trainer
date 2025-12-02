@@ -13,5 +13,5 @@ public interface ExercicioRepository extends JpaRepository<Exercicio, Long>{
 	
 	List<Exercicio> findByGrupoMuscular_GrupoMuscularId(Long grupoMuscularId);
 	
-	Optional<Exercicio> findByNome(String nome);
+	List<Exercicio> findByNomeContainingIgnoreCase(String nome);
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.edu.ufape.personal_trainer.dto.PersonalRequest;
 import br.edu.ufape.personal_trainer.model.Personal;
 import br.edu.ufape.personal_trainer.repository.PersonalRepository;
 
@@ -23,6 +24,24 @@ public class PersonalService {
 	public Personal buscarId(Long id) {
 		return personalRepository.findById(id).orElseThrow(() -> new RuntimeException("Não existe personal com ID: " + id));
 	}
+	
+	//criar dto
+	public Personal criar(PersonalRequest request) {
+        if (personalRepository.findByEmail(request.email()).isPresent()) {
+            throw new IllegalArgumentException("Email já cadastrado");
+        }
+        if (personalRepository.findByCref(request.cref()).isPresent()) {
+            throw new IllegalArgumentException("CREF já cadastrado");
+        }
+
+        Personal personal = new Personal();
+        personal.setNome(request.nome());
+        personal.setEmail(request.email());
+        personal.setSenha(request.senha());
+        personal.setCref(request.cref());
+
+        return personalRepository.save(personal);
+    }
 	
 	// salvar
 	public Personal salvar(Personal personal) {

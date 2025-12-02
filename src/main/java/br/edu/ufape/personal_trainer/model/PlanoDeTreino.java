@@ -33,16 +33,13 @@ public class PlanoDeTreino {
 	@Column(nullable = false)
 	private String nome;
 	
-	@Column(name = "data_criacao", nullable = false)
-	private LocalDate dataCriacao;
-	
 	@Column(name = "duracao_semanas", nullable = false)
 	private int duracaoSemanas;
 	
 	@Column(name = "data_inicio", nullable = false)
 	private LocalDate dataInicio;
 	
-	@Column(name = "data_fim", nullable = false)
+	@Column(name = "data_fim", nullable = true)
 	private LocalDate dataFim;
 	
 	@Column(nullable = false)

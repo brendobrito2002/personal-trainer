@@ -27,7 +27,7 @@ public class Fatura {
 	@Column(name = "data_vencimento", nullable = false)
 	private LocalDate dataVencimento;
 	
-	@Column(name = "data_pagamento", nullable = false)
+	@Column(name = "data_pagamento", nullable = true)
 	private LocalDate dataPagamento;
 	
 	@Column(nullable = false)
