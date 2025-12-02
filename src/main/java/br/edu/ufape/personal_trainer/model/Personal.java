@@ -3,6 +3,8 @@ package br.edu.ufape.personal_trainer.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -17,13 +19,15 @@ import lombok.Setter;
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-public class Personal extends Usuario{
-	@Column( unique = true, nullable = false)
-	private String cref;
-	
-	@OneToMany(mappedBy = "personal", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<Chat> chats = new ArrayList<>();
+public class Personal extends Usuario {
 
-	@OneToMany(mappedBy = "personal", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<Aluno> alunos = new ArrayList<>();
+    @Column(unique = true, nullable = false)
+    private String cref;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "personal", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Chat> chats = new ArrayList<>();
+
+    @OneToMany(mappedBy = "personal", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Aluno> alunos = new ArrayList<>();
 }

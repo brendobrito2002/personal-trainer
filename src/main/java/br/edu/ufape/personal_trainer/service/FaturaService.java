@@ -5,7 +5,10 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.edu.ufape.personal_trainer.dto.FaturaRequest;
+import br.edu.ufape.personal_trainer.model.Aluno;
 import br.edu.ufape.personal_trainer.model.Fatura;
+import br.edu.ufape.personal_trainer.repository.AlunoRepository;
 import br.edu.ufape.personal_trainer.repository.FaturaRepository;
 
 @Service
@@ -13,6 +16,8 @@ public class FaturaService {
 
 	@Autowired
 	private FaturaRepository faturaRepository;
+	
+	@Autowired AlunoRepository alunoRepository;
 	
 	// listar todos
 	public List<Fatura> listarTodos(){
@@ -24,6 +29,21 @@ public class FaturaService {
 		return faturaRepository.findById(id).orElseThrow(() -> new RuntimeException("Não existe fatura com ID: " + id));
 	}
 	
+	// criar dto
+	public Fatura criar(FaturaRequest request) {
+        Aluno aluno = alunoRepository.findById(request.alunoId())
+                .orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
+
+        Fatura fatura = new Fatura();
+        fatura.setAluno(aluno);
+        fatura.setValor(request.valor());
+        fatura.setDataVencimento(request.dataVencimento());
+        fatura.setStatus(request.status());
+        // dataPagamento = null (fatura pendente)
+
+        return faturaRepository.save(fatura);
+    }
+
 	// salvar (MUITO PROVAVELMENTE ADICIONAR MAIS)
 	public Fatura salvar(Fatura fatura) {
 		if(fatura.getAluno() == null) {

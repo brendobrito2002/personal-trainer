@@ -5,7 +5,10 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.edu.ufape.personal_trainer.dto.PlanoDeTreinoRequest;
+import br.edu.ufape.personal_trainer.model.Aluno;
 import br.edu.ufape.personal_trainer.model.PlanoDeTreino;
+import br.edu.ufape.personal_trainer.repository.AlunoRepository;
 import br.edu.ufape.personal_trainer.repository.PlanoDeTreinoRepository;
 
 @Service
@@ -13,6 +16,9 @@ public class PlanoDeTreinoService {
 
     @Autowired
     private PlanoDeTreinoRepository planoDeTreinoRepository;
+    
+    @Autowired
+    private AlunoRepository alunoRepository;
 
     // listar todos
     public List<PlanoDeTreino> listarTodos() {
@@ -23,6 +29,22 @@ public class PlanoDeTreinoService {
     public PlanoDeTreino buscarId(Long id) {
         return planoDeTreinoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Plano de treino não encontrado com ID: " + id));
+    }
+    
+    // criar dto
+    public PlanoDeTreino criar(PlanoDeTreinoRequest request) {
+        Aluno aluno = alunoRepository.findById(request.alunoId())
+                .orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
+
+        PlanoDeTreino plano = new PlanoDeTreino();
+        plano.setAluno(aluno);
+        plano.setNome(request.nome());
+        plano.setDuracaoSemanas(request.duracaoSemanas());
+        plano.setDataInicio(request.dataInicio());
+        plano.setDataFim(request.dataInicio().plusWeeks(request.duracaoSemanas()));
+        plano.setAtivo(true);
+
+        return planoDeTreinoRepository.save(plano);
     }
 
     // salvar (TALVEZ ADICIONAR MAIS)
@@ -49,7 +71,4 @@ public class PlanoDeTreinoService {
         return planoDeTreinoRepository.findByAluno_UsuarioId(alunoId);
     }
 
-    public List<PlanoDeTreino> buscarPorNome(String nome) {
-        return planoDeTreinoRepository.findByNome(nome);
-    }
 }

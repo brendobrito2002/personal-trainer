@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.edu.ufape.personal_trainer.dto.AlunoRequest;
 import br.edu.ufape.personal_trainer.model.Aluno;
 import br.edu.ufape.personal_trainer.repository.AlunoRepository;
 
@@ -23,6 +24,19 @@ public class AlunoService {
 	public Aluno buscarId(Long id) {
 		return alunoRepository.findById(id).orElseThrow(() -> new RuntimeException("Já existe um aluno com ID: " + id));
 	}
+	
+	// criar dto
+	public Aluno criar(AlunoRequest request) {
+        Aluno aluno = new Aluno();
+        aluno.setNome(request.nome());
+        aluno.setEmail(request.email());
+        aluno.setSenha(request.senha());
+        aluno.setDataNascimento(request.dataNascimento());
+        aluno.setModalidade(request.modalidade());
+        aluno.setObjetivo(request.objetivo());
+        aluno.setAtivo(true);
+        return alunoRepository.save(aluno);
+    }
 	
 	// salvar
 	public Aluno salvar(Aluno aluno) {
@@ -56,8 +70,5 @@ public class AlunoService {
 	public Aluno buscarEmail(String email){
 		return alunoRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("Aluno não encontrado com email: " + email));
 	}
-	
-	public List<Aluno> buscarNome(String nome){
-		return alunoRepository.findByNome(nome);
-	}
+
 }
