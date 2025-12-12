@@ -29,6 +29,10 @@ public class AvaliacaoFisicaService {
 	// criar dto
 	public AvaliacaoFisica criar(AvaliacaoFisicaRequest dto, Aluno aluno) {
 
+        if(aluno.getPersonal() == null) {
+        	throw new IllegalArgumentException("Aluno precisa estar vinculado a um personal");
+        }
+		
 	    AvaliacaoFisica av = new AvaliacaoFisica();
 	    av.setAluno(aluno);
 	    av.setDataAvaliacao(dto.dataAvaliacao());

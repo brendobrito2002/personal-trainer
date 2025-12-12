@@ -7,13 +7,18 @@ import org.springframework.stereotype.Service;
 
 import br.edu.ufape.personal_trainer.dto.AlunoRequest;
 import br.edu.ufape.personal_trainer.model.Aluno;
+import br.edu.ufape.personal_trainer.model.Personal;
 import br.edu.ufape.personal_trainer.repository.AlunoRepository;
+import br.edu.ufape.personal_trainer.repository.PersonalRepository;
 
 @Service
 public class AlunoService {
 
 	@Autowired
 	private AlunoRepository alunoRepository;
+	
+	@Autowired
+	private PersonalRepository personalRepository;
 	
 	// listar todos
 	public List<Aluno> listarTodos(){
@@ -34,7 +39,7 @@ public class AlunoService {
         aluno.setDataNascimento(request.dataNascimento());
         aluno.setModalidade(request.modalidade());
         aluno.setObjetivo(request.objetivo());
-        aluno.setAtivo(true);
+        aluno.setAtivo(false);
         return alunoRepository.save(aluno);
     }
 	
@@ -52,9 +57,17 @@ public class AlunoService {
 	
 	// deletar
 	public void deletar(Long id) {
+		Aluno aluno = buscarId(id);
+		
 		if(!alunoRepository.existsById(id)) {
 			throw new RuntimeException("Não existe aluno com ID: " + id);
 		}
+		if (!aluno.getFaturas().isEmpty()) {
+	        throw new IllegalStateException("Aluno possui faturas — não pode ser deletado");
+	    }
+	    if (!aluno.getPlanos().isEmpty()) {
+	        throw new IllegalStateException("Aluno possui planos de treino — não pode ser deletado");
+	    }
 		alunoRepository.deleteById(id);
 	}
 	
@@ -69,6 +82,31 @@ public class AlunoService {
 	
 	public Aluno buscarEmail(String email){
 		return alunoRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("Aluno não encontrado com email: " + email));
+	}
+	
+	public void VincularPersonal(Long alunoId, Long personalId) {
+		Aluno aluno = alunoRepository.findById(alunoId).orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
+		Personal personal = personalRepository.findById(personalId).orElseThrow(() -> new RuntimeException("Personal não encontrado"));
+		
+		if(aluno.getPersonal() != null) {
+			throw new IllegalArgumentException("Aluno já está vinculado a um personal");
+		}
+		
+		aluno.setPersonal(personal);
+		aluno.setAtivo(true);
+		alunoRepository.save(aluno);
+	}
+	
+	public void DesvincularPersonal(Long alunoId) {
+		Aluno aluno = alunoRepository.findById(alunoId).orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
+		
+		if(aluno.getPersonal() == null) {
+			throw new IllegalArgumentException("Aluno não está vinculado a um personal");
+		}
+		
+		aluno.setPersonal(null);
+		aluno.setAtivo(false);
+		alunoRepository.save(aluno);
 	}
 
 }

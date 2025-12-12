@@ -35,6 +35,14 @@ public class PlanoDeTreinoService {
     public PlanoDeTreino criar(PlanoDeTreinoRequest request) {
         Aluno aluno = alunoRepository.findById(request.alunoId())
                 .orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
+        
+        if(aluno.getPersonal() == null) {
+        	throw new IllegalArgumentException("Aluno precisa estar vinculado a um personal");
+        }
+        
+        if (planoDeTreinoRepository.findByAluno_UsuarioIdAndAtivoTrue(aluno.getUsuarioId()).isPresent()) {
+            throw new IllegalStateException("Aluno já possui um plano ativo");
+        }
 
         PlanoDeTreino plano = new PlanoDeTreino();
         plano.setAluno(aluno);

@@ -36,7 +36,7 @@ public class ItemTreinoService {
 	}
 	
 	// criar dto
-	public ItemTreino criar(ItemTreinoRequest request, Long planoId) {  // ← FALTOU planoId
+	public ItemTreino criar(ItemTreinoRequest request, Long planoId) {
 	    Exercicio exercicio = exercicioRepository.findById(request.exercicioId())
 	        .orElseThrow(() -> new RuntimeException("Exercício não encontrado"));
 
@@ -45,7 +45,7 @@ public class ItemTreinoService {
 
 	    ItemTreino itemTreino = new ItemTreino();
 	    itemTreino.setExercicio(exercicio);
-	    itemTreino.setPlano(plano);  // ← FALTOU ISSO
+	    itemTreino.setPlano(plano);
 	    itemTreino.setSeries(request.series());
 	    itemTreino.setRepeticoes(request.repeticoes());
 	    itemTreino.setCargaKg(request.cargaKg());

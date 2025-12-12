@@ -33,13 +33,20 @@ public class FaturaService {
 	public Fatura criar(FaturaRequest request) {
         Aluno aluno = alunoRepository.findById(request.alunoId())
                 .orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
+        
+        if(aluno.getPersonal() == null) {
+        	throw new IllegalArgumentException("Aluno precisa estar vinculado a um personal");
+        }
+        
+        if (faturaRepository.findByAluno_UsuarioIdAndStatus(aluno.getUsuarioId(), "PENDENTE").isPresent()) {
+            throw new IllegalStateException("Aluno já possui uma fatura pendente");
+        }
 
         Fatura fatura = new Fatura();
         fatura.setAluno(aluno);
         fatura.setValor(request.valor());
         fatura.setDataVencimento(request.dataVencimento());
         fatura.setStatus(request.status());
-        // dataPagamento = null (fatura pendente)
 
         return faturaRepository.save(fatura);
     }

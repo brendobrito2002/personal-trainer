@@ -62,9 +62,14 @@ public class PersonalService {
 	
 	// deletar
 	public void deletar(Long id) {
+		Personal personal = buscarId(id);
+		
 		if(!personalRepository.existsById(id)) {
 			throw new RuntimeException("Não existe personal com ID: " + id);
 		}
+		if (!personal.getAlunos().isEmpty()) {
+	        throw new IllegalStateException("Personal possui alunos vinculados — não pode ser deletado");
+	    }
 		personalRepository.deleteById(id);
 	}
 	

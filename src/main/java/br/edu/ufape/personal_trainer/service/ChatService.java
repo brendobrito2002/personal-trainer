@@ -45,6 +45,10 @@ public class ChatService {
 
         Aluno aluno = alunoRepository.findById(request.alunoId())
                 .orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
+        
+        if(aluno.getPersonal() == null) {
+        	throw new IllegalArgumentException("Aluno precisa estar vinculado a um personal");
+        }
 
         Personal personal = personalRepository.findById(request.personalId())
                 .orElseThrow(() -> new RuntimeException("Personal não encontrado"));
