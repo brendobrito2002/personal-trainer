@@ -28,6 +28,7 @@ public class Personal extends Usuario {
     @OneToMany(mappedBy = "personal", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Chat> chats = new ArrayList<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "personal", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Aluno> alunos = new ArrayList<>();
 }
