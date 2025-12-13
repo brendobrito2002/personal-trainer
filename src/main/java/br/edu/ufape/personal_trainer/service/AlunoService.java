@@ -27,7 +27,7 @@ public class AlunoService {
 	
 	// buscar id
 	public Aluno buscarId(Long id) {
-		return alunoRepository.findById(id).orElseThrow(() -> new RuntimeException("Já existe um aluno com ID: " + id));
+		return alunoRepository.findById(id).orElseThrow(() -> new RuntimeException("Não existe um aluno com ID: " + id));
 	}
 	
 	// criar dto

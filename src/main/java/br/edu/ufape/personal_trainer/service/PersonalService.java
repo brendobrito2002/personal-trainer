@@ -1,10 +1,13 @@
 package br.edu.ufape.personal_trainer.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.edu.ufape.personal_trainer.controller.advice.BusinessValidationException;
 import br.edu.ufape.personal_trainer.dto.PersonalRequest;
 import br.edu.ufape.personal_trainer.model.Personal;
 import br.edu.ufape.personal_trainer.repository.PersonalRepository;
@@ -27,11 +30,17 @@ public class PersonalService {
 	
 	//criar dto
 	public Personal criar(PersonalRequest request) {
+        Map<String, String> erros = new HashMap<>();
+
         if (personalRepository.findByEmail(request.email()).isPresent()) {
-            throw new IllegalArgumentException("Email já cadastrado");
+            erros.put("email", "Email já cadastrado");
         }
         if (personalRepository.findByCref(request.cref()).isPresent()) {
-            throw new IllegalArgumentException("CREF já cadastrado");
+            erros.put("cref", "CREF já cadastrado");
+        }
+
+        if (!erros.isEmpty()) {
+            throw new BusinessValidationException(erros);
         }
 
         Personal personal = new Personal();
