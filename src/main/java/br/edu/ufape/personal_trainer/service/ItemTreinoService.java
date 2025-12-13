@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import br.edu.ufape.personal_trainer.dto.ItemTreinoRequest;
 import br.edu.ufape.personal_trainer.model.Exercicio;
@@ -26,16 +27,19 @@ public class ItemTreinoService {
 	private PlanoDeTreinoRepository planoDeTreinoRepository;
 	
 	// listar todos
+	@Transactional(readOnly = true)
 	public List<ItemTreino> listarTodos(){
 		return itemTreinoRepository.findAll();
 	}
 	
 	// buscar id
+	@Transactional(readOnly = true)
 	public ItemTreino buscarId(Long id) {
 		return itemTreinoRepository.findById(id).orElseThrow(() -> new RuntimeException("Não existe item treino com ID: " + id));
 	}
 	
 	// criar dto
+	@Transactional
 	public ItemTreino criar(ItemTreinoRequest request, Long planoId) {
 	    Exercicio exercicio = exercicioRepository.findById(request.exercicioId())
 	        .orElseThrow(() -> new RuntimeException("Exercício não encontrado"));
@@ -55,6 +59,7 @@ public class ItemTreinoService {
 	}
 	
 	// salvar
+	@Transactional
 	public ItemTreino salvar(ItemTreino itemTreino) {
 		if (itemTreino.getPlano() == null) {
 		    throw new IllegalArgumentException("ItemTreino deve ter um plano");
@@ -66,6 +71,7 @@ public class ItemTreinoService {
 	}
 	
 	// deletar
+	@Transactional
 	public void deletar(Long id) {
 		if(!itemTreinoRepository.existsById(id)) {
 			throw new RuntimeException("Não existe item treino com ID: " + id);
@@ -74,10 +80,12 @@ public class ItemTreinoService {
 	}
 	
 	// metodos personalizados
+	@Transactional(readOnly = true)
 	public List<ItemTreino> buscarPorPlanoId(Long id){
 		return itemTreinoRepository.findByPlano_PlanoId(id);
 	}
 	
+	@Transactional(readOnly = true)
 	public List<ItemTreino> buscarPorExercicioId(Long id){
 		return itemTreinoRepository.findByExercicio_ExercicioId(id);
 	}

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import br.edu.ufape.personal_trainer.dto.AlunoRequest;
 import br.edu.ufape.personal_trainer.model.Aluno;
@@ -21,16 +22,19 @@ public class AlunoService {
 	private PersonalRepository personalRepository;
 	
 	// listar todos
+	@Transactional(readOnly = true)
 	public List<Aluno> listarTodos(){
 		return alunoRepository.findAll();
 	}
 	
 	// buscar id
+	@Transactional(readOnly = true)
 	public Aluno buscarId(Long id) {
 		return alunoRepository.findById(id).orElseThrow(() -> new RuntimeException("Não existe um aluno com ID: " + id));
 	}
 	
 	// criar dto
+	@Transactional
 	public Aluno criar(AlunoRequest request) {
         Aluno aluno = new Aluno();
         aluno.setNome(request.nome());
@@ -44,6 +48,7 @@ public class AlunoService {
     }
 	
 	// salvar
+	@Transactional
 	public Aluno salvar(Aluno aluno) {
 		if(aluno.getEmail() == null || aluno.getEmail().trim().isEmpty()) {
 			throw new IllegalArgumentException("Email é obrigatório");
@@ -56,6 +61,7 @@ public class AlunoService {
 	}
 	
 	// deletar
+	@Transactional
 	public void deletar(Long id) {
 		Aluno aluno = buscarId(id);
 		
@@ -72,18 +78,22 @@ public class AlunoService {
 	}
 	
 	// metodos personalizados
+	@Transactional(readOnly = true)
 	public List<Aluno> listarPorModalidade(String modalidade){
 		return alunoRepository.findByModalidade(modalidade);
 	}
 	
+	@Transactional(readOnly = true)
 	public List<Aluno> listarPorAtivo(){
 		return alunoRepository.findByAtivoTrue();
 	}
 	
+	@Transactional(readOnly = true)
 	public Aluno buscarEmail(String email){
 		return alunoRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("Aluno não encontrado com email: " + email));
 	}
 	
+	@Transactional
 	public void VincularPersonal(Long alunoId, Long personalId) {
 		Aluno aluno = alunoRepository.findById(alunoId).orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
 		Personal personal = personalRepository.findById(personalId).orElseThrow(() -> new RuntimeException("Personal não encontrado"));
@@ -97,6 +107,7 @@ public class AlunoService {
 		alunoRepository.save(aluno);
 	}
 	
+	@Transactional
 	public void DesvincularPersonal(Long alunoId) {
 		Aluno aluno = alunoRepository.findById(alunoId).orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
 		

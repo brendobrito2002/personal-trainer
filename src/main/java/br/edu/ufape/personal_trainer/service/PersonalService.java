@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import br.edu.ufape.personal_trainer.controller.advice.BusinessValidationException;
 import br.edu.ufape.personal_trainer.dto.PersonalRequest;
@@ -19,16 +20,19 @@ public class PersonalService {
 	private PersonalRepository personalRepository;
 	
 	// listar todos
+	@Transactional(readOnly = true)
 	public List<Personal> listarTodos(){
 		return personalRepository.findAll();
 	}
 	
 	// buscar id
+	@Transactional(readOnly = true)
 	public Personal buscarId(Long id) {
 		return personalRepository.findById(id).orElseThrow(() -> new RuntimeException("Não existe personal com ID: " + id));
 	}
 	
 	//criar dto
+	@Transactional
 	public Personal criar(PersonalRequest request) {
         Map<String, String> erros = new HashMap<>();
 
@@ -53,6 +57,7 @@ public class PersonalService {
     }
 	
 	// salvar
+	@Transactional
 	public Personal salvar(Personal personal) {
 	    if (personal.getCref() == null || personal.getCref().trim().isEmpty()) {
 	        throw new IllegalArgumentException("CREF é obrigatório");
@@ -70,6 +75,7 @@ public class PersonalService {
 	}
 	
 	// deletar
+	@Transactional
 	public void deletar(Long id) {
 		Personal personal = buscarId(id);
 		
@@ -83,10 +89,12 @@ public class PersonalService {
 	}
 	
 	// metodos personalizados
+	@Transactional(readOnly = true)
 	public Personal buscarPorCref(String cref) {
 		return personalRepository.findByCref(cref).orElseThrow(() -> new RuntimeException("Não existe personal com CREF: " + cref));
 	}
 	
+	@Transactional(readOnly = true)
 	public Personal buscarPorEmail(String email) {
 		return personalRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("Não existe personal com EMAIL: " + email));
 	}

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import br.edu.ufape.personal_trainer.dto.ChatRequest;
 import br.edu.ufape.personal_trainer.model.Aluno;
@@ -26,16 +27,19 @@ public class ChatService {
 	private PersonalRepository personalRepository;
 	
 	// listar todos
+	@Transactional(readOnly = true)
 	public List<Chat> listarTodos(){
 		return chatRepository.findAll();
 	}
 	
 	// buscar id
+	@Transactional(readOnly = true)
 	public Chat buscarId(Long id) {
 		return chatRepository.findById(id).orElseThrow(() -> new RuntimeException("Não existe chat com ID: " + id));
 	}
 	
 	// criar dto
+	@Transactional
 	public Chat criar(ChatRequest request) {
         // Verifica se já existe chat
         if (chatRepository.findByAluno_UsuarioIdAndPersonal_UsuarioId(
@@ -61,6 +65,7 @@ public class ChatService {
     }
 	
 	// salvar
+	@Transactional
 	public Chat salvar(Chat chat) {
 	    if (chat.getAluno() == null || chat.getPersonal() == null) {
 	        throw new IllegalArgumentException("Um chat deve ter um aluno e um personal");
@@ -74,6 +79,7 @@ public class ChatService {
 	}
 	
 	// deletar
+	@Transactional
 	public void deletar(Long id) {
 		if(!chatRepository.existsById(id)) {
 			throw new RuntimeException("Não existe chat com o ID: "+ id);
@@ -82,14 +88,17 @@ public class ChatService {
 	}
 	
 	//metodos personalizados
+	@Transactional(readOnly = true)
 	public List<Chat> buscarPorAluno(Long alunoId) {
 	    return chatRepository.findByAluno_UsuarioId(alunoId);
 	}
 
+	@Transactional(readOnly = true)
 	public List<Chat> buscarPorPersonal(Long personalId) {
 	    return chatRepository.findByPersonal_UsuarioId(personalId);
 	}
 	
+	@Transactional(readOnly = true)
 	public Chat buscarPorAlunoIdAndPersonalId(Long alunoId, Long personalId) {
 		return chatRepository.findByAluno_UsuarioIdAndPersonal_UsuarioId(alunoId, personalId).orElseThrow(() -> new RuntimeException("Chat não encontrado entre aluno ID " + alunoId + " e personal ID " + personalId));
 	}
