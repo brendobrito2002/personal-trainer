@@ -3,6 +3,7 @@ package br.edu.ufape.personal_trainer.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,6 +12,7 @@ import br.edu.ufape.personal_trainer.model.Aluno;
 import br.edu.ufape.personal_trainer.model.Personal;
 import br.edu.ufape.personal_trainer.repository.AlunoRepository;
 import br.edu.ufape.personal_trainer.repository.PersonalRepository;
+import br.edu.ufape.personal_trainer.security.Role;
 
 @Service
 public class AlunoService {
@@ -20,6 +22,9 @@ public class AlunoService {
 	
 	@Autowired
 	private PersonalRepository personalRepository;
+	
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 	
 	// listar todos
 	@Transactional(readOnly = true)
@@ -35,15 +40,20 @@ public class AlunoService {
 	
 	// criar dto
 	@Transactional
-	public Aluno criar(AlunoRequest request) {
+    public Aluno criar(AlunoRequest request) {
         Aluno aluno = new Aluno();
         aluno.setNome(request.nome());
         aluno.setEmail(request.email());
-        aluno.setSenha(request.senha());
+
+        aluno.setSenha(passwordEncoder.encode(request.senha()));
+
         aluno.setDataNascimento(request.dataNascimento());
         aluno.setModalidade(request.modalidade());
         aluno.setObjetivo(request.objetivo());
         aluno.setAtivo(false);
+
+        aluno.setRole(Role.ALUNO);
+
         return alunoRepository.save(aluno);
     }
 	

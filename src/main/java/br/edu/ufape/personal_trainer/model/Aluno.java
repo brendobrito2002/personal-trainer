@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
@@ -23,6 +24,7 @@ import lombok.Setter;
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
+@DiscriminatorValue("ALUNO")
 public class Aluno extends Usuario{
 	@ManyToOne
 	@JoinColumn(name = "personalId")

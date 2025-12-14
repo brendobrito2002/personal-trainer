@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,12 +13,16 @@ import br.edu.ufape.personal_trainer.controller.advice.BusinessValidationExcepti
 import br.edu.ufape.personal_trainer.dto.PersonalRequest;
 import br.edu.ufape.personal_trainer.model.Personal;
 import br.edu.ufape.personal_trainer.repository.PersonalRepository;
+import br.edu.ufape.personal_trainer.security.Role;
 
 @Service
 public class PersonalService {
 
 	@Autowired
 	private PersonalRepository personalRepository;
+	
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 	
 	// listar todos
 	@Transactional(readOnly = true)
@@ -33,7 +38,7 @@ public class PersonalService {
 	
 	//criar dto
 	@Transactional
-	public Personal criar(PersonalRequest request) {
+    public Personal criar(PersonalRequest request) {
         Map<String, String> erros = new HashMap<>();
 
         if (personalRepository.findByEmail(request.email()).isPresent()) {
@@ -50,8 +55,12 @@ public class PersonalService {
         Personal personal = new Personal();
         personal.setNome(request.nome());
         personal.setEmail(request.email());
-        personal.setSenha(request.senha());
+
+        personal.setSenha(passwordEncoder.encode(request.senha()));
+
         personal.setCref(request.cref());
+
+        personal.setRole(Role.PERSONAL);
 
         return personalRepository.save(personal);
     }

@@ -7,8 +7,8 @@ import br.edu.ufape.personal_trainer.service.AlunoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -18,6 +18,7 @@ public class AlunoController {
     @Autowired
     private AlunoService alunoService;
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'PERSONAL')")
     @GetMapping
     public List<AlunoResponse> listarTodos() {
         return alunoService.listarTodos().stream()
@@ -25,6 +26,7 @@ public class AlunoController {
                 .toList();
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'PERSONAL', 'ALUNO')")
     @GetMapping("/{id}")
     public ResponseEntity<AlunoResponse> buscarId(@PathVariable Long id) {
         Aluno aluno = alunoService.buscarId(id);
@@ -37,12 +39,14 @@ public class AlunoController {
         return ResponseEntity.status(201).body(new AlunoResponse(aluno));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
         alunoService.deletar(id);
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'PERSONAL')")
     @GetMapping("/modalidades/{modalidade}")
     public List<AlunoResponse> listarPorModalidade(@PathVariable String modalidade) {
         return alunoService.listarPorModalidade(modalidade).stream()
@@ -50,6 +54,7 @@ public class AlunoController {
                 .toList();
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'PERSONAL')")
     @GetMapping("/ativos")
     public List<AlunoResponse> listarPorAtivo() {
         return alunoService.listarPorAtivo().stream()
@@ -57,24 +62,28 @@ public class AlunoController {
                 .toList();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/email/{email}")
     public ResponseEntity<AlunoResponse> buscarEmail(@PathVariable String email) {
         Aluno aluno = alunoService.buscarEmail(email);
         return ResponseEntity.ok(new AlunoResponse(aluno));
     }
-    
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'PERSONAL')")
     @PatchMapping("/{alunoId}/vincular/{personalId}")
-    public ResponseEntity<AlunoResponse> vincularPersonal(@PathVariable Long alunoId, @PathVariable Long personalId){
-    	alunoService.VincularPersonal(alunoId, personalId);
-    	Aluno aluno = alunoService.buscarId(alunoId);
-    	return ResponseEntity.ok(new AlunoResponse(aluno));
-    }
-    
-    @PatchMapping("/{alunoId}/desvincular")
-    public ResponseEntity<AlunoResponse> desvincularPersonal(@PathVariable Long alunoId){
-    	alunoService.DesvincularPersonal(alunoId);
-    	Aluno aluno = alunoService.buscarId(alunoId);
-    	return ResponseEntity.ok(new AlunoResponse(aluno));
+    public ResponseEntity<AlunoResponse> vincularPersonal(
+            @PathVariable Long alunoId,
+            @PathVariable Long personalId) {
+        alunoService.VincularPersonal(alunoId, personalId);
+        Aluno aluno = alunoService.buscarId(alunoId);
+        return ResponseEntity.ok(new AlunoResponse(aluno));
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'PERSONAL')")
+    @PatchMapping("/{alunoId}/desvincular")
+    public ResponseEntity<AlunoResponse> desvincularPersonal(@PathVariable Long alunoId) {
+        alunoService.DesvincularPersonal(alunoId);
+        Aluno aluno = alunoService.buscarId(alunoId);
+        return ResponseEntity.ok(new AlunoResponse(aluno));
+    }
 }
