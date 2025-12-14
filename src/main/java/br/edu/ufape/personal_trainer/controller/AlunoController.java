@@ -81,9 +81,8 @@ public class AlunoController {
 
     @PreAuthorize("hasAnyRole('ADMIN', 'PERSONAL')")
     @PatchMapping("/{alunoId}/desvincular")
-    public ResponseEntity<AlunoResponse> desvincularPersonal(@PathVariable Long alunoId) {
+    public ResponseEntity<Void> desvincularPersonal(@PathVariable Long alunoId) {
         alunoService.DesvincularPersonal(alunoId);
-        Aluno aluno = alunoService.buscarId(alunoId);
-        return ResponseEntity.ok(new AlunoResponse(aluno));
+        return ResponseEntity.noContent().build();
     }
 }

@@ -33,8 +33,7 @@ public class Mensagem{
 	@Column(nullable = false)
 	private LocalDateTime timeStamp;
 	
-	@Column(nullable = false)
-	private Boolean enviadoPeloAluno = false;
+	private Boolean enviadoPeloAluno;
 	
 	@Column(nullable = false)
 	private Boolean lida = false;

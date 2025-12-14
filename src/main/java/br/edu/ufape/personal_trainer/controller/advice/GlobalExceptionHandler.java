@@ -2,6 +2,8 @@ package br.edu.ufape.personal_trainer.controller.advice;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.*;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,7 +29,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BusinessValidationException.class)
     public ResponseEntity<ErrorResponse> handleBusinessValidation(
             BusinessValidationException ex, HttpServletRequest request) {
-
         return buildResponse(400, "Validação de negócio", "Dados inválidos", request.getRequestURI(), ex.getErrors());
     }
 
@@ -38,8 +39,20 @@ public class GlobalExceptionHandler {
         return buildResponse(400, "Regra de negócio", ex.getMessage(), request.getRequestURI(), detail);
     }
 
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ErrorResponse> handleAccessDenied(AccessDeniedException ex, HttpServletRequest request) {
+        // Usa a mensagem real passada pelo AccessDeniedException
+        String msg = ex.getMessage() != null ? ex.getMessage() : "Você não tem permissão para acessar este recurso";
+        return buildResponse(403, "Acesso negado", msg, request.getRequestURI(), null);
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ErrorResponse> handleAuthenticationError(AuthenticationException ex, HttpServletRequest request) {
+        return buildResponse(401, "Não autenticado", "Credenciais inválidas ou ausentes", request.getRequestURI(), null);
+    }
+
     @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<ErrorResponse> handleNotFound(RuntimeException ex, HttpServletRequest request) {
+    public ResponseEntity<ErrorResponse> handleRuntime(RuntimeException ex, HttpServletRequest request) {
         return buildResponse(404, "Não encontrado", ex.getMessage(), request.getRequestURI(), null);
     }
 

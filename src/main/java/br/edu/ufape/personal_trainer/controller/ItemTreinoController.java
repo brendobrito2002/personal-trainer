@@ -33,7 +33,7 @@ public class ItemTreinoController {
         return ResponseEntity.ok(new ItemTreinoResponse(itemTreino));
     }
 
-    @PreAuthorize("hasRole('PERSONAL')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'PERSONAL')")
     @PostMapping("/plano/{planoId}/itens")
     public ResponseEntity<ItemTreinoResponse> criar(@PathVariable Long planoId, @Valid @RequestBody ItemTreinoRequest request) {
         ItemTreino itemTreino = itemTreinoService.criar(request, planoId);

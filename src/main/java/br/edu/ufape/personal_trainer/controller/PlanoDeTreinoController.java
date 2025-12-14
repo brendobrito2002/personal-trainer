@@ -33,7 +33,7 @@ public class PlanoDeTreinoController {
         return ResponseEntity.ok(new PlanoDeTreinoResponse(plano));
     }
 
-    @PreAuthorize("hasRole('PERSONAL')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'PERSONAL')")
     @PostMapping
     public ResponseEntity<PlanoDeTreinoResponse> criar(@Valid @RequestBody PlanoDeTreinoRequest request) {
         PlanoDeTreino plano = planoService.criar(request);

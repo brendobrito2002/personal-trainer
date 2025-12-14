@@ -33,7 +33,7 @@ public class FaturaController {
         return ResponseEntity.ok(new FaturaResponse(fatura));
     }
 
-    @PreAuthorize("hasRole('PERSONAL')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'PERSONAL')")
     @PostMapping
     public ResponseEntity<FaturaResponse> criar(@Valid @RequestBody FaturaRequest request) {
         Fatura fatura = faturaService.criar(request);

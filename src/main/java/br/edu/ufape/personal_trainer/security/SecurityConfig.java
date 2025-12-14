@@ -11,24 +11,21 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.config.Customizer;
 
 @Configuration
-@EnableMethodSecurity(prePostEnabled = true)  // Ativa @PreAuthorize
+@EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf.disable())
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))  // Sem sessão (para API)
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                // Libera Swagger
                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
-                // Libera login e cadastro
                 .requestMatchers("/auth/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/alunos", "/api/personais").permitAll()
-                // Demais regras por role (gerenciadas por @PreAuthorize)
                 .anyRequest().authenticated()
             )
-            .httpBasic(Customizer.withDefaults());  // Basic Auth para Postman/Swagger
+            .httpBasic(Customizer.withDefaults());
 
         return http.build();
     }

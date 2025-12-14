@@ -18,7 +18,7 @@ public class PersonalController {
     @Autowired
     private PersonalService personalService;
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'PERSONAL')")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @GetMapping
     public List<PersonalResponse> listarTodos() {
         return personalService.listarTodos().stream()

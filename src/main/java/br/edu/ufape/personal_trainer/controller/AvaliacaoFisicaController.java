@@ -38,7 +38,7 @@ public class AvaliacaoFisicaController {
         return ResponseEntity.ok(new AvaliacaoFisicaResponse(av));
     }
 
-    @PreAuthorize("hasRole('PERSONAL')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'PERSONAL')")
     @PostMapping
     public ResponseEntity<AvaliacaoFisicaResponse> salvar(@Valid @RequestBody AvaliacaoFisicaRequest request) {
         Aluno aluno = alunoService.buscarId(request.alunoId());

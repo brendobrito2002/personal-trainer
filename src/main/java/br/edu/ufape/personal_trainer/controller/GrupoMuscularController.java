@@ -14,19 +14,19 @@ public class GrupoMuscularController {
     @Autowired
     private GrupoMuscularService grupoMuscularService;
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'PERSONAL', 'ALUNO')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'PERSONAL')")
     @GetMapping
     public List<GrupoMuscular> listarTodos() {
         return grupoMuscularService.listarTodos();
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'PERSONAL', 'ALUNO')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'PERSONAL')")
     @GetMapping("/{id}")
     public GrupoMuscular buscarId(@PathVariable Long id) {
         return grupoMuscularService.buscarId(id);
     }
 
-    @PreAuthorize("hasRole('PERSONAL')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'PERSONAL')")
     @PostMapping
     public GrupoMuscular salvar(@RequestBody GrupoMuscular grupoMuscular) {
         return grupoMuscularService.salvar(grupoMuscular);
@@ -38,7 +38,7 @@ public class GrupoMuscularController {
         grupoMuscularService.deletar(id);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'PERSONAL', 'ALUNO')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'PERSONAL')")
     @GetMapping("/nome")
     public GrupoMuscular buscarPorNome(@RequestParam String nome) {
         return grupoMuscularService.buscarPorNome(nome);

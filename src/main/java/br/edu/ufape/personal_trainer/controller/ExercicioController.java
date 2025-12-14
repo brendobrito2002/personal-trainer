@@ -16,7 +16,7 @@ public class ExercicioController {
 
     @Autowired
     private ExercicioService exercicioService;
-
+    
     @PreAuthorize("hasAnyRole('ADMIN', 'PERSONAL', 'ALUNO')")
     @GetMapping
     public List<ExercicioResponse> listarTodos() {
@@ -31,7 +31,7 @@ public class ExercicioController {
         return ResponseEntity.ok(new ExercicioResponse(exercicioService.buscarId(id)));
     }
 
-    @PreAuthorize("hasRole('PERSONAL')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'PERSONAL')")
     @PostMapping
     public ResponseEntity<ExercicioResponse> criar(@Valid @RequestBody ExercicioRequest request) {
         return ResponseEntity.status(201)
