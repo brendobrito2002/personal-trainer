@@ -49,7 +49,7 @@ public class Aluno extends Usuario{
 	private LocalDate dataNascimento;
 	
 	@Column(nullable = false)
-	private Boolean ativo;
+	private Boolean ativo = false;
 	
 	@Column(nullable = false)
 	private String objetivo;

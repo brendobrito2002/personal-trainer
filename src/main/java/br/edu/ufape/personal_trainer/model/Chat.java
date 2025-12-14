@@ -3,6 +3,8 @@ package br.edu.ufape.personal_trainer.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -30,6 +32,7 @@ public class Chat {
 	@JoinColumn(name = "alunoId")
 	private Aluno aluno;
 	
+	@JsonIgnore
 	@OneToMany(mappedBy = "chat", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Mensagem> mensagens = new ArrayList<>();
 }

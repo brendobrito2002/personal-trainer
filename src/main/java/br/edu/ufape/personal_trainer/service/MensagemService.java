@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import br.edu.ufape.personal_trainer.dto.MensagemRequest;
 import br.edu.ufape.personal_trainer.model.Chat;
@@ -22,17 +23,20 @@ public class MensagemService {
     private ChatRepository chatRepository;
 
     // listar todos
+    @Transactional(readOnly = true)
     public List<Mensagem> listarTodos() {
         return mensagemRepository.findAll();
     }
 
     // buscar id
+    @Transactional(readOnly = true)
     public Mensagem buscarId(Long id) {
         return mensagemRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Não existe mensagem com ID: " + id));
     }
     
     // criar dto
+    @Transactional
     public Mensagem criar(MensagemRequest request, Long chatId) {
         Chat chat = chatRepository.findById(chatId)
                 .orElseThrow(() -> new RuntimeException("Chat não encontrado"));
@@ -48,6 +52,7 @@ public class MensagemService {
     }
 
     // salvar (MUITO PROVAVELMENTE ADICIONAR MAIS)
+    @Transactional
     public Mensagem salvar(Mensagem mensagem) {
         if (mensagem.getChat() == null) {
             throw new IllegalArgumentException("Mensagem deve pertencer a um chat");
@@ -56,6 +61,7 @@ public class MensagemService {
     }
 
     // deletar
+    @Transactional
     public void deletar(Long id) {
         if (!mensagemRepository.existsById(id)) {
             throw new RuntimeException("Não existe mensagem com ID: " + id);
@@ -64,14 +70,17 @@ public class MensagemService {
     }
 
     // métodos personalizados
+    @Transactional(readOnly = true)
     public List<Mensagem> buscarPorChatId(Long chatId) {
         return mensagemRepository.findByChat_ChatIdOrderByTimeStamp(chatId);
     }
 
+    @Transactional(readOnly = true)
     public List<Mensagem> buscarEnviadasPeloAluno(Long chatId) {
         return mensagemRepository.findByChat_ChatIdAndEnviadoPeloAlunoTrue(chatId);
     }
 
+    @Transactional(readOnly = true)
     public List<Mensagem> buscarEnviadasPeloPersonal(Long chatId) {
         return mensagemRepository.findByChat_ChatIdAndEnviadoPeloAlunoFalse(chatId);
     }

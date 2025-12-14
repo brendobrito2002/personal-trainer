@@ -62,5 +62,19 @@ public class AlunoController {
         Aluno aluno = alunoService.buscarEmail(email);
         return ResponseEntity.ok(new AlunoResponse(aluno));
     }
+    
+    @PatchMapping("/{alunoId}/vincular/{personalId}")
+    public ResponseEntity<AlunoResponse> vincularPersonal(@PathVariable Long alunoId, @PathVariable Long personalId){
+    	alunoService.VincularPersonal(alunoId, personalId);
+    	Aluno aluno = alunoService.buscarId(alunoId);
+    	return ResponseEntity.ok(new AlunoResponse(aluno));
+    }
+    
+    @PatchMapping("/{alunoId}/desvincular")
+    public ResponseEntity<AlunoResponse> desvincularPersonal(@PathVariable Long alunoId){
+    	alunoService.DesvincularPersonal(alunoId);
+    	Aluno aluno = alunoService.buscarId(alunoId);
+    	return ResponseEntity.ok(new AlunoResponse(aluno));
+    }
 
 }

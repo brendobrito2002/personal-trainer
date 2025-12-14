@@ -1,6 +1,7 @@
 package br.edu.ufape.personal_trainer.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -13,4 +14,6 @@ public interface FaturaRepository extends JpaRepository<Fatura, Long>{
 	List<Fatura> findByAluno_UsuarioId(Long alunoId);
 	
 	List<Fatura> findByStatus(String status);
+	
+	Optional<Fatura> findByAluno_UsuarioIdAndStatus(Long alunoId, String status);
 }

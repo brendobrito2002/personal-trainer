@@ -2,6 +2,8 @@ package br.edu.ufape.personal_trainer.model;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -25,6 +27,7 @@ public class Exercicio {
 	@JoinColumn(name = "grupoMuscularId")
 	private GrupoMuscular grupoMuscular;
 	
+	@JsonIgnore
 	@OneToMany(mappedBy = "exercicio")
 	private List<ItemTreino> itens;
 	

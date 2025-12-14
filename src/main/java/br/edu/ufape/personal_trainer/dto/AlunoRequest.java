@@ -6,9 +6,9 @@ import java.time.LocalDate;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 public record AlunoRequest(
-    @NotBlank(message = "Nome é obrigatório")
-    @Size(min = 4, max = 50)
-    String nome,
+	@NotBlank(message = "Nome é obrigatório")
+	@Size(min = 4, max = 50, message = "Nome deve ter entre 4 e 50 caracteres")
+	String nome,
 
     @NotBlank(message = "Email é obrigatório")
     @Email(message = "Email inválido")

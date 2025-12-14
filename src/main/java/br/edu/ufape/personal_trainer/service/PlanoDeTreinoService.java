@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import br.edu.ufape.personal_trainer.dto.PlanoDeTreinoRequest;
 import br.edu.ufape.personal_trainer.model.Aluno;
@@ -21,20 +22,31 @@ public class PlanoDeTreinoService {
     private AlunoRepository alunoRepository;
 
     // listar todos
+    @Transactional(readOnly = true)
     public List<PlanoDeTreino> listarTodos() {
         return planoDeTreinoRepository.findAll();
     }
 
     // buscar id
+    @Transactional(readOnly = true)
     public PlanoDeTreino buscarId(Long id) {
         return planoDeTreinoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Plano de treino não encontrado com ID: " + id));
     }
     
     // criar dto
+    @Transactional
     public PlanoDeTreino criar(PlanoDeTreinoRequest request) {
         Aluno aluno = alunoRepository.findById(request.alunoId())
                 .orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
+        
+        if(aluno.getPersonal() == null) {
+        	throw new IllegalArgumentException("Aluno precisa estar vinculado a um personal");
+        }
+        
+        if (planoDeTreinoRepository.findByAluno_UsuarioIdAndAtivoTrue(aluno.getUsuarioId()).isPresent()) {
+            throw new IllegalStateException("Aluno já possui um plano ativo");
+        }
 
         PlanoDeTreino plano = new PlanoDeTreino();
         plano.setAluno(aluno);
@@ -48,6 +60,7 @@ public class PlanoDeTreinoService {
     }
 
     // salvar (TALVEZ ADICIONAR MAIS)
+    @Transactional
     public PlanoDeTreino salvar(PlanoDeTreino plano) {
         if (plano.getAluno() == null) {
             throw new IllegalArgumentException("Plano deve ter um aluno");
@@ -59,6 +72,7 @@ public class PlanoDeTreinoService {
     }
 
     // deletar
+    @Transactional
     public void deletar(Long id) {
         if (!planoDeTreinoRepository.existsById(id)) {
             throw new RuntimeException("Plano de treino não existe com ID: " + id);
@@ -67,6 +81,7 @@ public class PlanoDeTreinoService {
     }
 
     // metodos personalizados
+    @Transactional(readOnly = true)
     public List<PlanoDeTreino> buscarPorAlunoId(Long alunoId) {
         return planoDeTreinoRepository.findByAluno_UsuarioId(alunoId);
     }
