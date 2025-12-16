@@ -62,4 +62,18 @@ public class FaturaController {
                 .map(FaturaResponse::new)
                 .toList();
     }
+    
+    @PatchMapping("/{id}/pagar")
+    @PreAuthorize("hasAnyRole('ALUNO', 'ADMIN')")
+    public ResponseEntity<FaturaResponse> pagarFatura(@PathVariable Long id) {
+        Fatura fatura = faturaService.pagarFatura(id);
+        return ResponseEntity.ok(new FaturaResponse(fatura));
+    }
+
+    @PatchMapping("/{id}/cancelar")
+    @PreAuthorize("hasAnyRole('PERSONAL', 'ADMIN')")
+    public ResponseEntity<FaturaResponse> cancelarFatura(@PathVariable Long id) {
+        Fatura fatura = faturaService.cancelarFatura(id);
+        return ResponseEntity.ok(new FaturaResponse(fatura));
+    }
 }

@@ -1,11 +1,14 @@
 package br.edu.ufape.personal_trainer.service;
 
+import java.time.LocalDate;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import br.edu.ufape.personal_trainer.dto.FaturaRequest;
 import br.edu.ufape.personal_trainer.model.Aluno;
 import br.edu.ufape.personal_trainer.model.Fatura;
@@ -20,17 +23,10 @@ import br.edu.ufape.personal_trainer.security.Role;
 @Service
 public class FaturaService {
 
-    @Autowired
-    private FaturaRepository faturaRepository;
-
-    @Autowired
-    private AlunoRepository alunoRepository;
-
-    @Autowired
-    private PersonalRepository personalRepository;
-
-    @Autowired
-    private UsuarioRepository usuarioRepository;
+    @Autowired private FaturaRepository faturaRepository;
+    @Autowired private AlunoRepository alunoRepository;
+    @Autowired private PersonalRepository personalRepository;
+    @Autowired private UsuarioRepository usuarioRepository;
 
     private Usuario getUsuarioLogado() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -39,17 +35,29 @@ public class FaturaService {
                 .orElseThrow(() -> new RuntimeException("Usuário logado não encontrado"));
     }
 
+    private void verificarVencimento(Fatura fatura) {
+        if ("PENDENTE".equals(fatura.getStatus()) 
+            && fatura.getDataVencimento().isBefore(LocalDate.now())) {
+            fatura.setStatus("VENCIDA");
+            faturaRepository.save(fatura);
+        }
+    }
+
     @Transactional(readOnly = true)
     public List<Fatura> listarTodos() {
         Usuario logado = getUsuarioLogado();
         if (logado.getRole() == Role.ADMIN) {
-            return faturaRepository.findAll();
+            List<Fatura> todas = faturaRepository.findAll();
+            todas.forEach(this::verificarVencimento);
+            return todas;
         }
         if (logado.getRole() == Role.PERSONAL) {
             Personal personal = personalRepository.findById(logado.getUsuarioId())
                     .orElseThrow(() -> new RuntimeException("Personal não encontrado"));
             List<Aluno> alunosDoPersonal = alunoRepository.findByPersonal(personal);
-            return faturaRepository.findByAlunoIn(alunosDoPersonal);
+            List<Fatura> faturas = faturaRepository.findByAlunoIn(alunosDoPersonal);
+            faturas.forEach(this::verificarVencimento);
+            return faturas;
         }
         throw new RuntimeException("Acesso negado");
     }
@@ -59,13 +67,14 @@ public class FaturaService {
         Fatura fatura = faturaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Não existe fatura com ID: " + id));
 
+        verificarVencimento(fatura);
+
         Usuario logado = getUsuarioLogado();
         Aluno aluno = fatura.getAluno();
 
         if (logado.getRole() == Role.ALUNO && !aluno.getUsuarioId().equals(logado.getUsuarioId())) {
             throw new RuntimeException("Você só pode visualizar suas próprias faturas");
         }
-
         if (logado.getRole() == Role.PERSONAL) {
             Personal personalLogado = personalRepository.findById(logado.getUsuarioId())
                     .orElseThrow(() -> new RuntimeException("Personal não encontrado"));
@@ -73,7 +82,6 @@ public class FaturaService {
                 throw new RuntimeException("Você só pode visualizar faturas de seus próprios alunos");
             }
         }
-
         return fatura;
     }
 
@@ -107,16 +115,34 @@ public class FaturaService {
         fatura.setAluno(aluno);
         fatura.setValor(request.valor());
         fatura.setDataVencimento(request.dataVencimento());
-        fatura.setStatus(request.status());
-
+        fatura.setStatus("PENDENTE");
         return faturaRepository.save(fatura);
     }
 
     @Transactional
-    public Fatura salvar(Fatura fatura) {
-        if (fatura.getAluno() == null) {
-            throw new IllegalArgumentException("Uma fatura deve ter um aluno");
+    public Fatura pagarFatura(Long faturaId) {
+        Fatura fatura = faturaRepository.findById(faturaId)
+                .orElseThrow(() -> new RuntimeException("Fatura não encontrada"));
+
+        if (!"PENDENTE".equals(fatura.getStatus())) {
+            throw new IllegalStateException("Esta fatura já foi paga, cancelada ou está vencida");
         }
+
+        fatura.setStatus("PAGA");
+        fatura.setDataPagamento(LocalDate.now());
+        return faturaRepository.save(fatura);
+    }
+
+    @Transactional
+    public Fatura cancelarFatura(Long faturaId) {
+        Fatura fatura = faturaRepository.findById(faturaId)
+                .orElseThrow(() -> new RuntimeException("Fatura não encontrada"));
+
+        if (!"PENDENTE".equals(fatura.getStatus())) {
+            throw new IllegalStateException("Só é possível cancelar faturas pendentes");
+        }
+
+        fatura.setStatus("CANCELADA");
         return faturaRepository.save(fatura);
     }
 
@@ -126,7 +152,6 @@ public class FaturaService {
         if (logado.getRole() != Role.ADMIN) {
             throw new RuntimeException("Apenas admin pode deletar faturas");
         }
-
         if (!faturaRepository.existsById(id)) {
             throw new RuntimeException("Não existe fatura com ID: " + id);
         }
@@ -139,11 +164,9 @@ public class FaturaService {
                 .orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
 
         Usuario logado = getUsuarioLogado();
-
         if (logado.getRole() == Role.ALUNO && !aluno.getUsuarioId().equals(logado.getUsuarioId())) {
             throw new RuntimeException("Você só pode visualizar suas próprias faturas");
         }
-
         if (logado.getRole() == Role.PERSONAL) {
             Personal personalLogado = personalRepository.findById(logado.getUsuarioId())
                     .orElseThrow(() -> new RuntimeException("Personal não encontrado"));
@@ -152,26 +175,28 @@ public class FaturaService {
             }
         }
 
-        return faturaRepository.findByAluno_UsuarioId(alunoId);
+        List<Fatura> faturas = faturaRepository.findByAluno_UsuarioId(alunoId);
+        faturas.forEach(this::verificarVencimento);
+        	return faturas;
     }
 
     @Transactional(readOnly = true)
     public List<Fatura> buscarPorStatus(String status) {
         Usuario logado = getUsuarioLogado();
+        List<Fatura> faturas;
 
         if (logado.getRole() == Role.ADMIN) {
-            return faturaRepository.findByStatus(status);
-        }
-
-        if (logado.getRole() == Role.PERSONAL) {
+            faturas = faturaRepository.findByStatus(status);
+        } else if (logado.getRole() == Role.PERSONAL) {
             Personal personalLogado = personalRepository.findById(logado.getUsuarioId())
                     .orElseThrow(() -> new RuntimeException("Personal não encontrado"));
-
             List<Aluno> alunosDoPersonal = alunoRepository.findByPersonal(personalLogado);
-
-            return faturaRepository.findByAlunoInAndStatus(alunosDoPersonal, status);
+            faturas = faturaRepository.findByAlunoInAndStatus(alunosDoPersonal, status);
+        } else {
+            throw new RuntimeException("Acesso negado");
         }
 
-        throw new RuntimeException("Acesso negado");
+        faturas.forEach(this::verificarVencimento);
+        return faturas;
     }
 }
