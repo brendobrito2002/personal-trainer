@@ -20,18 +20,18 @@ Esta API RESTful foi desenvolvida como um backend completo para um sistema de ge
 - **Validação:** Bean Validation (Jakarta Validation)
 - **Documentação API:** SpringDoc OpenAPI (Swagger UI)
 - **Redução de código:** Lombok + Records (DTOs imutáveis)
-- **Inicialização de dados:** `data.sql` + CommandLineRunner (admin padrão)
+- **Inicialização de dados:** CommandLineRunner (dados populados automaticamente)
 
 ---
 ## 3. Atores do Sistema
 
 | Ator                | Descrição                                                                 | Permissões Chave                                                                 |
 |---------------------|---------------------------------------------------------------------------|----------------------------------------------------------------------------------|
-| **Administrador**   | Usuário com acesso total ao sistema                                       | Visualizar, criar, editar e excluir qualquer recurso de qualquer usuário         |
+| **Administrador**  | Usuário com acesso total ao sistema                                       | Visualizar, criar, editar e excluir qualquer recurso de qualquer usuário         |
 | **Personal Trainer**| Profissional responsável pelo acompanhamento dos alunos                   | Gerenciar apenas seus próprios alunos: planos de treino, itens, avaliações, faturas, chat e exercícios |
 | **Aluno**           | Cliente que contrata o personal trainer                                   | Visualizar apenas seus próprios dados: planos, itens de treino, avaliações, faturas e chat com seu personal |
 
-**Credenciais para teste (após executar com data.sql):**
+**Credenciais para teste:**
 - Admin: `admin@admin.com` / `admin123`
 - Personais e Alunos: `seuemail@email.com` / `123456`
 
@@ -61,35 +61,60 @@ Esta API RESTful foi desenvolvida como um backend completo para um sistema de ge
 - Histórico por aluno
 
 ### 4.5 Módulo de Faturas
-- Controle de cobranças com valor, vencimento, status (PENDENTE/PAGA/CANCELADA)
+- Controle de cobranças com valor, vencimento, status (PENDENTE/PAGA/CANCELADA/VENCIDA)
 - Limite de apenas **uma fatura pendente** por aluno
-- Visualização por aluno ou personal
+- Pagamento e cancelamento manual
+- Vencimento automático (vira VENCIDA se passar da data)
 
 ### 4.6 Módulo de Chat
 - Chat individual entre personal e aluno (criado automaticamente ao vincular)
-- Envio de mensagens com timestamp, marcação de lida e suporte a multimídia (caminho de imagem/vídeo)
+- Envio de mensagens com timestamp, marcação de lida e suporte a multimídia
 - Histórico ordenado
 
 ### 4.7 Módulo de Segurança e Validação
-- Autenticação via HttpBasic (em desenvolvimento para JWT)
+- Autenticação via **HTTP Basic Auth**
 - Autorização granular (roles + verificação de dono do recurso)
 - Validações completas com mensagens em português
 - Tratamento global de exceções com respostas padronizadas
 
 ---
-## 5. Guia de Execução da API
+## 5. Autenticação (IMPORTANTE!)
 
-### 5.1 Pré-requisitos
+A API usa **Basic Authentication** (não JWT).
+
+### No Swagger UI
+1. Acesse: http://localhost:8080/swagger-ui.html
+2. Clique no botão verde **Authorize** (canto superior direito)
+3. Preencha:
+   - **Username** → e-mail do usuário (ex: `joao@email.com`)
+   - **Password** → `123456` (ou `admin123` para o admin)
+4. Clique em **Authorize** → todas as requisições protegidas funcionarão automaticamente
+
+### No Insomnia / Postman / cURL
+Configure **Basic Auth**:
+- Username: e-mail do usuário
+- Password: `123456` (ou `admin123` para admin)
+
+**Exemplo com cURL:**
+```bash
+curl -u joao@email.com:123456 http://localhost:8080/api/planos/aluno/1
+```
+
+---
+## 6. Guia de Execução da API
+
+### 6.1 Pré-requisitos
 - Java 21
 - Maven
-- PostgreSQL rodando
+- PostgreSQL
 
-### 5.2 Configuração do Banco de Dados
+### 6.2 Configuração do Banco de Dados
 - Banco: `personal_trainer_db`
 - Usuário: `postgres`
-- Senha: `personaltrainer` (conforme application.properties)
+- Senha: `personaltrainer`
 
-### 5.3 Como Executar
+### 6.3 Como Executar
 ```bash
 git clone https://github.com/seu-usuario/personal-trainer.git
+cd personal-trainer
 mvn spring-boot:run
