@@ -36,9 +36,12 @@ public class ExercicioService {
 	// criar dto
 	@Transactional
 	public Exercicio criar(ExercicioRequest request) {
-        GrupoMuscular grupoMuscular = grupoMuscularRepository.findById(request.grupoMuscularId())
-                .orElseThrow(() -> new RuntimeException("Grupo muscular não encontrado"));
+        GrupoMuscular grupoMuscular = grupoMuscularRepository.findById(request.grupoMuscularId()).orElseThrow(() -> new RuntimeException("Grupo muscular não encontrado"));
 
+        if (!exercicioRepository.findByNomeContainingIgnoreCase(request.nome()).isEmpty()) {
+            throw new IllegalArgumentException("Já existe um exercício com nome semelhante: " + request.nome());
+        }
+        
         Exercicio exercicio = new Exercicio();
         exercicio.setNome(request.nome());
         exercicio.setDescricao(request.descricao());
@@ -56,7 +59,9 @@ public class ExercicioService {
 	    if (exercicio.getGrupoMuscular() == null) {
 	        throw new IllegalArgumentException("Grupo muscular é obrigatório");
 	    }
-	    if (exercicioRepository.findByNomeContainingIgnoreCase(exercicio.getNome()).isEmpty()) {
+	    
+	    List<Exercicio> existentes = exercicioRepository.findByNomeContainingIgnoreCase(exercicio.getNome());
+	    if (!existentes.isEmpty() && !existentes.get(0).getExercicioId().equals(exercicio.getExercicioId())) {
 	        throw new IllegalArgumentException("Já existe um exercício com o nome: " + exercicio.getNome());
 	    }
 	    return exercicioRepository.save(exercicio);

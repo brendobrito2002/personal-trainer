@@ -31,15 +31,13 @@ public class MensagemService {
     // buscar id
     @Transactional(readOnly = true)
     public Mensagem buscarId(Long id) {
-        return mensagemRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Não existe mensagem com ID: " + id));
+        return mensagemRepository.findById(id).orElseThrow(() -> new RuntimeException("Não existe mensagem com ID: " + id));
     }
     
     // criar dto
     @Transactional
     public Mensagem criar(MensagemRequest request, Long chatId) {
-        Chat chat = chatRepository.findById(chatId)
-                .orElseThrow(() -> new RuntimeException("Chat não encontrado"));
+        Chat chat = chatRepository.findById(chatId).orElseThrow(() -> new RuntimeException("Chat não encontrado"));
 
         Mensagem mensagem = new Mensagem();
         mensagem.setConteudo(request.conteudo());

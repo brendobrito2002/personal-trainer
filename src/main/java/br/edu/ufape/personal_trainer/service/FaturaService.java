@@ -1,5 +1,6 @@
 package br.edu.ufape.personal_trainer.service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,21 +23,24 @@ public class FaturaService {
 	
 	// listar todos
 	@Transactional(readOnly = true)
-	public List<Fatura> listarTodos(){
-		return faturaRepository.findAll();
+	public List<Fatura> listarTodos() {
+	    List<Fatura> faturas = faturaRepository.findAll();
+	    faturas.forEach(this::verificarVencimento);
+	    return faturas;
 	}
 	
 	// buscar id
 	@Transactional(readOnly = true)
 	public Fatura buscarId(Long id) {
-		return faturaRepository.findById(id).orElseThrow(() -> new RuntimeException("Não existe fatura com ID: " + id));
+	    Fatura fatura = faturaRepository.findById(id).orElseThrow(() -> new RuntimeException("Não existe fatura com ID: " + id));
+	    verificarVencimento(fatura);
+	    return fatura;
 	}
 	
 	// criar dto
 	@Transactional
 	public Fatura criar(FaturaRequest request) {
-        Aluno aluno = alunoRepository.findById(request.alunoId())
-                .orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
+        Aluno aluno = alunoRepository.findById(request.alunoId()).orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
         
         if(aluno.getPersonal() == null) {
         	throw new IllegalArgumentException("Aluno precisa estar vinculado a um personal");
@@ -50,7 +54,7 @@ public class FaturaService {
         fatura.setAluno(aluno);
         fatura.setValor(request.valor());
         fatura.setDataVencimento(request.dataVencimento());
-        fatura.setStatus(request.status());
+        fatura.setStatus("PENDENTE");
 
         return faturaRepository.save(fatura);
     }
@@ -75,12 +79,50 @@ public class FaturaService {
 	
 	// metodos personalizados
 	@Transactional(readOnly = true)
-	public List<Fatura> buscarPorAlunoId(Long alunoId){
-		return faturaRepository.findByAluno_UsuarioId(alunoId);
+	public List<Fatura> buscarPorAlunoId(Long alunoId) {
+	    List<Fatura> faturas = faturaRepository.findByAluno_UsuarioId(alunoId);
+	    faturas.forEach(this::verificarVencimento);
+	    return faturas;
 	}
 	
 	@Transactional(readOnly = true)
-	public List<Fatura> buscarPorStatus(String status){
-		return faturaRepository.findByStatus(status);
+	public List<Fatura> buscarPorStatus(String status) {
+	    List<Fatura> faturas = faturaRepository.findByStatus(status);
+	    faturas.forEach(this::verificarVencimento);
+	    return faturas;
+	}
+	
+	@Transactional
+	private void verificarVencimento(Fatura fatura) {
+	    if ("PENDENTE".equals(fatura.getStatus()) 
+	        && fatura.getDataVencimento().isBefore(LocalDate.now())) {
+	        fatura.setStatus("VENCIDA");
+	        faturaRepository.save(fatura);
+	    }
+	}
+	
+	@Transactional
+	public Fatura pagarFatura(Long faturaId) {
+	    Fatura fatura = faturaRepository.findById(faturaId).orElseThrow(() -> new RuntimeException("Fatura não encontrada"));
+
+	    if (!"PENDENTE".equals(fatura.getStatus())) {
+	        throw new IllegalStateException("Esta fatura já foi paga, cancelada ou está vencida");
+	    }
+
+	    fatura.setStatus("PAGA");
+	    fatura.setDataPagamento(LocalDate.now());
+	    return faturaRepository.save(fatura);
+	}
+
+	@Transactional
+	public Fatura cancelarFatura(Long faturaId) {
+	    Fatura fatura = faturaRepository.findById(faturaId).orElseThrow(() -> new RuntimeException("Fatura não encontrada"));
+
+	    if (!"PENDENTE".equals(fatura.getStatus())) {
+	        throw new IllegalStateException("Só é possível cancelar faturas pendentes");
+	    }
+
+	    fatura.setStatus("CANCELADA");
+	    return faturaRepository.save(fatura);
 	}
 }

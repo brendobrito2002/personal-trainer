@@ -30,15 +30,13 @@ public class PlanoDeTreinoService {
     // buscar id
     @Transactional(readOnly = true)
     public PlanoDeTreino buscarId(Long id) {
-        return planoDeTreinoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Plano de treino não encontrado com ID: " + id));
+        return planoDeTreinoRepository.findById(id).orElseThrow(() -> new RuntimeException("Plano de treino não encontrado com ID: " + id));
     }
     
     // criar dto
     @Transactional
     public PlanoDeTreino criar(PlanoDeTreinoRequest request) {
-        Aluno aluno = alunoRepository.findById(request.alunoId())
-                .orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
+        Aluno aluno = alunoRepository.findById(request.alunoId()).orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
         
         if(aluno.getPersonal() == null) {
         	throw new IllegalArgumentException("Aluno precisa estar vinculado a um personal");

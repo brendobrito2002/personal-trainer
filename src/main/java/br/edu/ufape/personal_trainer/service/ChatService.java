@@ -41,21 +41,17 @@ public class ChatService {
 	// criar dto
 	@Transactional
 	public Chat criar(ChatRequest request) {
-        // Verifica se já existe chat
-        if (chatRepository.findByAluno_UsuarioIdAndPersonal_UsuarioId(
-                request.alunoId(), request.personalId()).isPresent()) {
+        if (chatRepository.findByAluno_UsuarioIdAndPersonal_UsuarioId(request.alunoId(), request.personalId()).isPresent()) {
             throw new IllegalArgumentException("Chat já existe entre este aluno e personal");
         }
 
-        Aluno aluno = alunoRepository.findById(request.alunoId())
-                .orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
+        Aluno aluno = alunoRepository.findById(request.alunoId()).orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
         
         if(aluno.getPersonal() == null) {
         	throw new IllegalArgumentException("Aluno precisa estar vinculado a um personal");
         }
 
-        Personal personal = personalRepository.findById(request.personalId())
-                .orElseThrow(() -> new RuntimeException("Personal não encontrado"));
+        Personal personal = personalRepository.findById(request.personalId()).orElseThrow(() -> new RuntimeException("Personal não encontrado"));
 
         Chat chat = new Chat();
         chat.setAluno(aluno);
