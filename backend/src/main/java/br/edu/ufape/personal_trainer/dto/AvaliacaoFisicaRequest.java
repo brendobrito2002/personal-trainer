@@ -5,7 +5,7 @@ import java.time.LocalDate;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Positive;
 
 public record AvaliacaoFisicaRequest(
@@ -14,7 +14,7 @@ public record AvaliacaoFisicaRequest(
         Long alunoId,
 
         @NotNull(message = "A data da avaliação é obrigatória")
-        @Past(message = "Avaliação deve ter sido feita")
+        @PastOrPresent(message = "Avaliação deve ter sido feita")
         @JsonFormat(pattern = "dd/MM/yyyy")
         LocalDate dataAvaliacao,
 

@@ -43,6 +43,30 @@ export default function AlunosPage() {
     buscarPersonais();
   }, []);
 
+  const formatarDataParaInput = (dataOriginal?: string) => {
+    if (!dataOriginal) return "";
+    const semHora = dataOriginal.split("T")[0];
+    // Tenta formato dd/MM/yyyy
+    const partesBarra = semHora.split("/");
+    if (partesBarra.length === 3) {
+      const [dia, mes, ano] = partesBarra;
+      return `${ano}-${mes.padStart(2, '0')}-${dia.padStart(2, '0')}`;
+    }
+    // Tenta formato yyyy-MM-dd
+    const partesTraco = semHora.split("-");
+    if (partesTraco.length === 3) {
+      const [ano, mes, dia] = partesTraco;
+      return `${ano}-${mes.padStart(2, '0')}-${dia.padStart(2, '0')}`;
+    }
+    return "";
+  };
+
+  const formatarDataParaBackend = (data: string) => {
+    if (!data.trim()) return null;
+    const [ano, mes, dia] = data.split("-");
+    return `${dia}/${mes}/${ano}`;
+  };
+
   const buscarAlunos = async () => {
     try {
       const cookies = document.cookie.split("; ");
@@ -104,7 +128,6 @@ export default function AlunosPage() {
       const resposta = await fetch("http://localhost:8080/api/personais", {
         headers: { Authorization: `Bearer ${token}` },
       });
-
       if (resposta.ok) {
         setPersonais(await resposta.json());
       }
@@ -125,7 +148,6 @@ export default function AlunosPage() {
       alert("Selecione um personal.");
       return;
     }
-
     try {
       const token = document.cookie.split("; ").find(row => row.startsWith("token="))?.split("=")[1]?.trim();
       const resposta = await fetch(`http://localhost:8080/api/alunos/${alunoVinculandoId}/vincular/${personalSelecionadoId}`, {
@@ -135,7 +157,6 @@ export default function AlunosPage() {
           Authorization: `Bearer ${token}`,
         },
       });
-
       if (resposta.ok) {
         alert("Aluno vinculado com sucesso!");
         setModalVincularAberto(false);
@@ -152,7 +173,6 @@ export default function AlunosPage() {
 
   const handleDesvincularAluno = async (alunoId: number) => {
     if (!confirm("Tem certeza que deseja desvincular este aluno do personal?")) return;
-
     try {
       const token = document.cookie.split("; ").find(row => row.startsWith("token="))?.split("=")[1]?.trim();
       const resposta = await fetch(`http://localhost:8080/api/alunos/${alunoId}/desvincular`, {
@@ -162,7 +182,6 @@ export default function AlunosPage() {
           Authorization: `Bearer ${token}`,
         },
       });
-
       if (resposta.ok) {
         alert("Aluno desvinculado com sucesso!");
         buscarAlunos();
@@ -178,19 +197,16 @@ export default function AlunosPage() {
 
   const handleExcluirAluno = async (id: number) => {
     if (!confirm("⚠️ ATENÇÃO: Tem certeza que deseja apagar DEFINITIVAMENTE este aluno do sistema?")) return;
-
     try {
       const token = document.cookie.split("; ").find(row => row.startsWith("token="))?.split("=")[1]?.trim();
       const resposta = await fetch(`http://localhost:8080/api/alunos/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
-
       if (resposta.status === 403) {
         alert("Ação não permitida! Apenas o Administrador do sistema pode apagar um aluno definitivamente.");
         return;
       }
-
       if (resposta.ok) {
         buscarAlunos();
       } else {
@@ -205,7 +221,7 @@ export default function AlunosPage() {
   const abrirModalEditar = (aluno: Aluno) => {
     setAlunoEditandoId(aluno.id);
     setNomeEdit(aluno.nome);
-    setDataNascimentoEdit(aluno.dataNascimento ? aluno.dataNascimento.split("T")[0] : "");
+    setDataNascimentoEdit(formatarDataParaInput(aluno.dataNascimento)); // <--- AQUI: carrega data corretamente
     setModalidadeEdit(aluno.modalidade || "");
     setObjetivoEdit(aluno.objetivo || "");
     setModalEditarAberto(true);
@@ -214,15 +230,8 @@ export default function AlunosPage() {
   const handleEditarAluno = async (e: React.FormEvent) => {
     e.preventDefault();
     setSalvando(true);
-
     try {
       const token = document.cookie.split("; ").find(row => row.startsWith("token="))?.split("=")[1]?.trim();
-
-      const formatarData = (data: string) => {
-        if (!data) return null;
-        const [ano, mes, dia] = data.split("-");
-        return `${dia}/${mes}/${ano}`;
-      };
 
       const resposta = await fetch(`http://localhost:8080/api/alunos/${alunoEditandoId}`, {
         method: "PATCH",
@@ -232,7 +241,7 @@ export default function AlunosPage() {
         },
         body: JSON.stringify({
           nome: nomeEdit,
-          dataNascimento: formatarData(dataNascimentoEdit),
+          dataNascimento: formatarDataParaBackend(dataNascimentoEdit),
           modalidade: modalidadeEdit,
           objetivo: objetivoEdit,
         }),
@@ -263,7 +272,6 @@ export default function AlunosPage() {
     const partes = data.split("/");
     if (partes.length === 3) {
       const [dia, mes, ano] = partes;
-      // Validação simples: dia/mês/ano numéricos e com comprimento correto
       if (
         dia.length === 2 && mes.length === 2 && ano.length === 4 &&
         !isNaN(Number(dia)) && !isNaN(Number(mes)) && !isNaN(Number(ano))
@@ -271,15 +279,12 @@ export default function AlunosPage() {
         return data;
       }
     }
-
-    // Se não for dd/MM/yyyy válido, tenta tratar como ISO (yyyy-MM-dd)
     const dataLimpa = data.split("T")[0].trim();
     const partesIso = dataLimpa.split("-");
     if (partesIso.length === 3) {
       const [ano, mes, dia] = partesIso;
       return `${dia}/${mes}/${ano}`;
     }
-
     return "-";
   };
 
