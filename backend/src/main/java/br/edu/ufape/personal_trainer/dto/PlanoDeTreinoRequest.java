@@ -13,12 +13,17 @@ public record PlanoDeTreinoRequest(
     String nome,
 
     @NotNull(message = "Data de início é obrigatória")
-    @FutureOrPresent(message = "Data de início não pode ser no passado")
+    @FutureOrPresent(message = "Data de início deve ser hoje ou no futuro")
     @JsonFormat(pattern = "dd/MM/yyyy")
     LocalDate dataInicio,
-    
+
     @NotNull(message = "Data de fim é obrigatória")
-    @FutureOrPresent(message = "Data de fim não pode ser no passado")
+    @FutureOrPresent(message = "Data de fim deve ser hoje ou no futuro")
     @JsonFormat(pattern = "dd/MM/yyyy")
     LocalDate dataFim
-) {}
+) {
+    @AssertTrue(message = "Data de início deve ser anterior ou igual à data de fim")
+    private boolean isDataValida() {
+        return dataInicio == null || dataFim == null || !dataInicio.isAfter(dataFim);
+    }
+}

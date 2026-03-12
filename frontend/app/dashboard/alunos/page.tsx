@@ -400,16 +400,21 @@ export default function AlunosPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-zinc-300 mb-2">Modalidade</label>
+                <label className="block text-sm font-medium text-zinc-300 mb-2">Modalidade *</label>
                 <select
                   value={modalidadeEdit}
                   onChange={(e) => setModalidadeEdit(e.target.value)}
+                  required
                   className="w-full px-4 py-3 rounded-lg bg-zinc-950 border border-zinc-800 text-zinc-100 focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
                 >
-                  <option value="">Selecione...</option>
+                  {/* Removida a opção vazia para evitar "Selecione..." como valor */}
                   <option value="presencial">Presencial</option>
                   <option value="online">Online</option>
                 </select>
+                {/* Mensagem de ajuda caso esteja vazio (visível só se tentar salvar vazio) */}
+                {modalidadeEdit === "" && (
+                  <p className="text-red-400 text-xs mt-1">Selecione uma modalidade obrigatória.</p>
+                )}
               </div>
 
               <div>
@@ -432,7 +437,7 @@ export default function AlunosPage() {
                 </button>
                 <button
                   type="submit"
-                  disabled={salvando}
+                  disabled={salvando || modalidadeEdit === ""}
                   className="bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-2.5 rounded-lg font-medium shadow-lg disabled:opacity-50"
                 >
                   {salvando ? "Salvando..." : "Salvar Alterações"}

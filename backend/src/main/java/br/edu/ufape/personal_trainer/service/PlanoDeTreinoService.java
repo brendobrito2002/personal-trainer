@@ -33,11 +33,17 @@ public class PlanoDeTreinoService {
     public PlanoDeTreino criar(PlanoDeTreinoRequest dto) {
         SecurityUtil.requireAuthenticated();
         SecurityUtil.requireAdminOrPersonal();
+
         Aluno aluno = alunoService.buscarId(dto.alunoId());
         if (aluno.getPersonal() == null) {
             throw new IllegalArgumentException("Aluno precisa estar vinculado a um personal");
         }
         SecurityUtil.requirePersonalOfAlunoOrAdmin(aluno, "Acesso negado");
+
+        if (dto.dataInicio().isAfter(dto.dataFim())) {
+            throw new IllegalArgumentException("Data de início deve ser anterior ou igual à data de fim");
+        }
+
         PlanoDeTreino plano = new PlanoDeTreino();
         plano.setAluno(aluno);
         plano.setNome(dto.nome());
@@ -45,15 +51,23 @@ public class PlanoDeTreinoService {
         plano.setDataFim(dto.dataFim());
         return planoDeTreinoRepository.save(plano);
     }
-    
+
     @Transactional
     public PlanoDeTreino atualizar(Long id, PlanoDeTreinoUpdateRequest request) {
         SecurityUtil.requireAdminOrPersonal();
         PlanoDeTreino plano = buscarId(id);
         SecurityUtil.requirePersonalOfPlanoOrAdmin(plano, "Você não tem permissão para editar este plano");
+
+        if (request.dataInicio() != null && request.dataFim() != null) {
+            if (request.dataInicio().isAfter(request.dataFim())) {
+                throw new IllegalArgumentException("Data de início deve ser anterior ou igual à data de fim");
+            }
+        }
+
         if (request.nome() != null) plano.setNome(request.nome());
         if (request.dataInicio() != null) plano.setDataInicio(request.dataInicio());
         if (request.dataFim() != null) plano.setDataFim(request.dataFim());
+
         return planoDeTreinoRepository.save(plano);
     }
 

@@ -8,7 +8,7 @@ public record FaturaUpdateRequest(
     @Positive(message = "Valor deve ser maior que zero")
     Double valor,
 
-    @Future(message = "Vencimento deve ser no futuro")
+    @FutureOrPresent(message = "Vencimento deve ser hoje ou no futuro")
     @JsonFormat(pattern = "dd/MM/yyyy")
     LocalDate dataVencimento
 ) {}

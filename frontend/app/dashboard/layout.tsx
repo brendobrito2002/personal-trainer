@@ -14,47 +14,58 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   // FUNÇÃO MÁGICA: Verifica se a URL atual combina com o botão do menu
   const getMenuClass = (caminho: string) => {
-    // Exceção pro Início para não bugar os outros links
     if (caminho === "/dashboard" && pathname !== "/dashboard") {
       return "block px-4 py-3 rounded-lg text-zinc-400 hover:bg-zinc-800 hover:text-zinc-100 transition-colors border border-transparent";
     }
     
-    // Se a URL contém o caminho do botão, deixa ele aceso (Verde)
     if (pathname.startsWith(caminho)) {
       return "block px-4 py-3 rounded-lg bg-emerald-500/10 text-emerald-500 font-medium transition-colors border border-emerald-500/20";
     }
     
-    // Se não, deixa ele cinza normal
     return "block px-4 py-3 rounded-lg text-zinc-400 hover:bg-zinc-800 hover:text-zinc-100 transition-colors border border-transparent";
   };
 
   useEffect(() => {
-    const token = document.cookie.split("; ").find(row => row.startsWith("token="))?.split("=")[1]?.trim();
+    if (pathname === "/" || pathname.startsWith("/login")) {
+      return;
+    }
 
-    if (token) {
-      try {
-        const payloadBase64 = token.split(".")[1];
-        const payloadJson = atob(payloadBase64);
-        const payload = JSON.parse(payloadJson);
+    const tokenRaw = document.cookie.split("; ").find(row => row.trim().startsWith("token="));
+    const token = tokenRaw ? tokenRaw.split("=")[1]?.trim() : null;
 
-        // Ajuste aqui conforme o campo do role no seu JWT
-        const userRole = payload.role || payload.roles || payload.authorities?.[0] || "UNKNOWN";
+    if (!token) {
+      router.replace("/");
+      return;
+    }
 
-        // Bloqueio para aluno: mostra erro na tela de login e redireciona
-        if (userRole === "ALUNO" || userRole === "ROLE_ALUNO") {
-          alert("A visão do aluno ainda não foi implementada nesta versão do sistema.");
-          document.cookie = "token=; path=/; max-age=0";
-          router.replace("/"); // Usa replace para não deixar histórico
-        }
-      } catch (error) {
-        console.error("Erro ao decodificar JWT:", error);
-        document.cookie = "token=; path=/; max-age=0";
+    try {
+      const payloadBase64 = token.split(".")[1];
+      if (!payloadBase64) throw new Error("JWT inválido");
+
+      const payloadJson = atob(payloadBase64);
+      const payload = JSON.parse(payloadJson);
+
+      const userRole = 
+        payload.role || 
+        payload.roles?.[0] || 
+        payload.authorities?.[0]?.authority || 
+        "UNKNOWN";
+
+      // Bloqueio para aluno (mantido, mas com proteção contra loop)
+      if (userRole === "ALUNO" || userRole === "ROLE_ALUNO") {
+        alert("A visão do aluno ainda não foi implementada nesta versão do sistema.");
+        document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
         router.replace("/");
       }
-    } else {
-      router.replace("/");
+    } catch (error) {
+      console.error("Erro ao decodificar JWT:", error);
+      // Limpa e redireciona apenas se ainda não estiver na raiz
+      if (pathname !== "/") {
+        document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+        router.replace("/");
+      }
     }
-  }, [router]); // Dependência apenas do router
+  }, [pathname, router]);
 
   return (
     <div className="min-h-screen bg-zinc-950 flex">
